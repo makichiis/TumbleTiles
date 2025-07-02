@@ -1958,29 +1958,6 @@ class tumblegui:
                                        ")", fill=self.gridcolor, font=('', TILESIZE /
                                                                        5))
 
-import time 
-from pypresence import Presence 
-
-CLIENT_ID="1389791499369054309"
-IMAGE_KEY="tumble512"
-start_time = int(time.time())
-rpc = Presence(CLIENT_ID)
-rpc.connect()
-
-def update_presence():
-    # Update Rich Presence with current window title
-    try:
-        rpc.update(
-            details="Tumbling they Tiles",
-            large_image=IMAGE_KEY,
-            large_text="Tumbling they Tiles",
-            start=start_time
-        )
-    except Exception as e:
-        print(f"Error updating presence: {e}")
-    
-    root.after(15000, update_presence)
-
 
 if __name__ == "__main__":
 
@@ -1996,6 +1973,4 @@ if __name__ == "__main__":
     # root.geometry('300x300')
     mainwin = tumblegui(root)
 
-    update_presence()
-    root.after(15000, update_presence)
     mainloop()

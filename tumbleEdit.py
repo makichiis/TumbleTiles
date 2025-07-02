@@ -1921,7 +1921,7 @@ Shift + Right-Click:
         if ".xml" not in filename:
             filename = filename + ".xml"
 
-        file = open(filename, "w")
+        file = open(filename, "wb")
         file.write(mydata)
 
 
