@@ -9,17 +9,30 @@ Implements the tumble tile model as designed by Robert Schweller and Tim Wylie. 
 ### 1.1 Requirements ###
   * Required:
     * Python 3.13.+
-    * Tkinter (installs with Python)
-    * numpy (pip install numpy [Linux])/(python -m pip install numpy [Windows])
-      * Use version 2.2.6 if you get numpy errors on a different version
-    * Pillow: (pip install pillow)
-      * Use version 11.2.1 if you get Pillow errors on a different version 
+    * pip
+    * Tkinter
+      * Installation of both of these is platform-dependent    
 
-  * Optional:
-    * pyscreenshot: For screen capture (pip install pyscreenshot)
-    
+### 1.2 Ubuntu/Debian
+```sh
+$ sudo apt install python3-pip
+$ sudo apt install python3-tkinter
+$ python3 -m pip -r requirements.txt
+$ python3 main.py
+```
 
+### 1.3 Windows
+Tkinkter should be installed with your installation of Python. If it is not found, open an issue. 
+```sh
+$ py -m ensurepip --upgrade
+$ py -m pip install -r requirements.txt 
+$ py main.py
+```
 
-### 1.2 Usage ###
+### 1.4 Usage ###
   Running:
     >python main.py
+
+## NOTE(S)
+- The required version of `six` is outdated. If it fails to work for you, use the latest version, and open an issue if mistakes continue.
+

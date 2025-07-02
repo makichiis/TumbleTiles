@@ -401,11 +401,11 @@ Shift + Right-Click:
         self.prevFrame,
         borderwidth=1,
         relief=FLAT,
-        width=100,
+        width=1000,
          height=NEWTILEWINDOW_H - 40)
 
         # Canvas that will draw color preview
-        self.colorPrevCanvas = Canvas(self.colorFrame, width=100, height=100)
+        self.colorPrevCanvas = Canvas(self.colorFrame, width=1000, height=1000)
 
         self.drawColorPreview()
 
@@ -527,7 +527,7 @@ Shift + Right-Click:
         self.addTileWindow,
         borderwidth=1,
         relief=FLAT,
-        width=200,
+        width=1000,
         height=NEWTILEWINDOW_H - 40)
 
             # Frame that will hold the text boxes that the glues will be entered it
@@ -541,11 +541,11 @@ Shift + Right-Click:
         self.prevFrame,
         borderwidth=1,
         relief=FLAT,
-        width=100,
+        width=1000,
         height=NEWTILEWINDOW_H - 40)
 
         # Canvas that will draw color preview
-        self.colorPrevCanvas = Canvas(self.colorFrame, width=100, height=100)
+        self.colorPrevCanvas = Canvas(self.colorFrame, width=1000, height=1000)
 
         self.drawColorPreviewEdit(tile.color)
         CURRENTNEWTILECOLOR = tile.color
@@ -811,9 +811,9 @@ Shift + Right-Click:
             frame_size = y + size + 10
 
                 # frame_size = (PREVTILESIZE)*len(self.prevTileList) + 20
-        self.TilesFrame.config(width=100, height=500)
+        self.TilesFrame.config(width=1000, height=1000)
         self.tilePrevCanvas.config(
-        width=100, height=frame_size, scrollregion=(
+        width=1000, height=frame_size, scrollregion=(
         0, 0, 200, frame_size))
 
         self.TilesFrame.pack(side=TOP)
@@ -1961,12 +1961,12 @@ Shift + Right-Click:
             self.pressed_apply = False
 
             Label(self.w, text="Width:").pack()
-            self.bw_sbx=Spinbox(self.w, from_=10, to=100,width=5, increment=5, textvariable = self.bw)
+            self.bw_sbx=Spinbox(self.w, from_=10, to=1000,width=5, increment=5, textvariable = self.bw)
             # self.e1.insert(0, str(board_w))
             self.bw_sbx.pack()
 
             Label(self.w, text="Height:").pack()
-            self.bh_sbx = Spinbox(self.w, from_=10, to=100,width=5, increment=5, textvariable = self.bh)
+            self.bh_sbx = Spinbox(self.w, from_=10, to=1000,width=5, increment=5, textvariable = self.bh)
             # self.e2.insert(0, str(board_h))
             self.bh_sbx.pack()
 
