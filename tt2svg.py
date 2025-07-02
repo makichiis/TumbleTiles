@@ -1,6 +1,8 @@
 #!/usr/bin/env python2.7
 
+from __future__ import absolute_import
 import xml.etree.ElementTree as ET
+from six.moves import range
 
 def parseFile(filename):
     tree = ET.parse(filename)

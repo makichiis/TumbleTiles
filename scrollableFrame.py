@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from Tkinter import *   # from x import * is bad practice
-from ttk import *
+from __future__ import absolute_import
+from six.moves.tkinter import *   # from x import * is bad practice
+from six.moves.tkinter_ttk import *
+from six.moves import range
 
 # http://tkinter.unpythonic.net/wiki/VerticalScrolledFrame
 

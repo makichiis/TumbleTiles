@@ -1,10 +1,12 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import copy
-from Tkinter import *
-import tkFont
+from six.moves.tkinter import *
+import six.moves.tkinter_font
 from scrollableFrame import VerticalScrolledFrame
-import tkFileDialog
-import tkMessageBox
-import tkColorChooser
+import six.moves.tkinter_filedialog
+import six.moves.tkinter_messagebox
+import six.moves.tkinter_colorchooser
 import xml.etree.ElementTree as ET
 import tumbletiles as TT
 import main as TG
@@ -14,8 +16,9 @@ import time
 import os
 import sys
 import math
-from tkColorChooser import askcolor
+from six.moves.tkinter_colorchooser import askcolor
 import numpy as np
+from six.moves import range
 
 # the x and y coordinate that the preview tiles will begin to be drawn on
 
@@ -240,7 +243,7 @@ Shift + Right-Click:
 
                 """
         self.T.insert(END, quote)
-        myFont = tkFont.Font(
+        myFont = six.moves.tkinter_font.Font(
         family='Helvetica', size=12, weight='bold')
         self.T.config(state=DISABLED, font=myFont)
 
@@ -766,43 +769,43 @@ Shift + Right-Click:
                 if prevTile.glues[0] != "None":
                     # north
                     self.tilePrevCanvas.create_text(
-                    x + size / 2,
-                    y + size / 5,
+                    x + size // 2,
+                    y + size // 5,
                     text=prevTile.glues[0],
                     fill="#000",
                     font=(
                         '',
-                         size / 5))
+                         size // 5))
                 if prevTile.glues[1] != "None":
                     # east
                     self.tilePrevCanvas.create_text(
-                    x + size - size / 5,
-                    y + size / 2,
+                    x + size - size // 5,
+                    y + size // 2,
                     text=prevTile.glues[1],
                     fill="#000",
                     font=(
                         '',
-                         size / 5))
+                         size // 5))
                 if prevTile.glues[2] != "None":
                     # south
                     self.tilePrevCanvas.create_text(
-                    x + size / 2,
-                    y + size - size / 5,
+                    x + size // 2,
+                    y + size - size // 5,
                     text=prevTile.glues[2],
                     fill="#000",
                     font=(
                         '',
-                         size / 5))
+                         size // 5))
                 if prevTile.glues[3] != "None":
                     # west
                     self.tilePrevCanvas.create_text(
-                    x + size / 5,
-                    y + size / 2,
+                    x + size // 5,
+                    y + size // 2,
                     text=prevTile.glues[3],
                     fill="#000",
                     font=(
                         '',
-                         size / 5))
+                         size // 5))
 
             i += 1
             frame_size = y + size + 10
@@ -850,10 +853,11 @@ Shift + Right-Click:
 
         #event.state == 4 means control is held
         #event.state == 6 means control is held and caps lock is on
+        #TODO: Diagnose root of type errors (why are x and y floats now?)
         if event.state / 4 % 2 == 1:
-            self.CtrlSelect(x, y)
-            self.CURRENTSELECTIONX = x
-            self.CURRENTSELECTIONY = y
+            self.CtrlSelect(int(x), int(y))
+            self.CURRENTSELECTIONX = int(x)
+            self.CURRENTSELECTIONY = int(y)
             self.drawSquareSelectionGreen()
 
 
@@ -865,16 +869,16 @@ Shift + Right-Click:
                     self.ShftSelect(x, y, False, False)
             else:
                     self.ShftSelect(x, y, True, False)
-            self.CURRENTSELECTIONX = x
-            self.CURRENTSELECTIONY = y
+            self.CURRENTSELECTIONX = int(x)
+            self.CURRENTSELECTIONY = int(y)
 
         elif self.remove_state or event.num == rightClick:
             self.removeTileAtPos(x, y, True)
 
         elif event.num == leftClick:
 
-            self.CURRENTSELECTIONX = x
-            self.CURRENTSELECTIONY = y
+            self.CURRENTSELECTIONX = int(x)
+            self.CURRENTSELECTIONY = int(y)
             self.clearSelection()
             self.clearShiftSelection()
             self.drawSquareSelectionRed()
@@ -1217,11 +1221,11 @@ Shift + Right-Click:
                 try:
                     self.copiedSelection[x - self.SELECTIONX1][y - self.SELECTIONY1] = copy.deepcopy(self.board.coordToTile[x][y])
                 except IndexError:
-                    print "Error: tried to access self.copiedSelection[", x - self.SELECTIONX1, "][", y - self.SELECTIONY1, "]"
-                    print "Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0])
+                    print("Error: tried to access self.copiedSelection[", x - self.SELECTIONX1, "][", y - self.SELECTIONY1, "]")
+                    print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
 
-                    print "Error: tried to access self.board.coordToTile[", x, "][", y, "]"
-                    print "Its size is ", len(self.board.coordToTile[x]), ", ", len(self.board.coordToTile[x])
+                    print("Error: tried to access self.board.coordToTile[", x, "][", y, "]")
+                    print("Its size is ", len(self.board.coordToTile[x]), ", ", len(self.board.coordToTile[x]))
 
 
     def selectionVerticallyFlipped(self):
@@ -1265,8 +1269,8 @@ Shift + Right-Click:
                         tile = self.copiedSelection[x][y]
 
                 except IndexError:
-                    print "Error: tried to access self.copiedSelection[", x, "][", y, "]"
-                    print "Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0])
+                    print("Error: tried to access self.copiedSelection[", x, "][", y, "]")
+                    print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
 
                 # print "x: ",x
                 # print "y: ", y
@@ -1349,8 +1353,8 @@ Shift + Right-Click:
                             tile = self.copiedSelection[x][y]
 
                     except IndexError:
-                        print "Error: tried to access self.copiedSelection[", x, "][", y, "]"
-                        print "Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0])
+                        print("Error: tried to access self.copiedSelection[", x, "][", y, "]")
+                        print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
 
                     # print "x: ",x
                     # print "y: ", y
@@ -1454,13 +1458,13 @@ Shift + Right-Click:
         global COPYMADE
 
         if not COPYMADE:
-            print "Nothing to paste"
+            print("Nothing to paste")
 
         else:
 
             for x in range(0, self.SELECTIONX2 - self.SELECTIONX1):
                 for y in range(0, self.SELECTIONY2 - self.SELECTIONY1):
-                    print "Removing tile at ", x + self.CURRENTSELECTIONX, ", ", y + self.CURRENTSELECTIONY
+                    print("Removing tile at ", x + self.CURRENTSELECTIONX, ", ", y + self.CURRENTSELECTIONY)
                     self.removeTileAtPos(self.CURRENTSELECTIONX + x,self.CURRENTSELECTIONY + y, False)
                     
 
@@ -1482,8 +1486,8 @@ Shift + Right-Click:
                             tile = self.copiedSelection[x][y]
 
                     except IndexError:
-                        print "Error: tried to access self.copiedSelection[", x, "][", y, "]"
-                        print "Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0])
+                        print("Error: tried to access self.copiedSelection[", x, "][", y, "]")
+                        print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
 
                     # print "x: ",x
                     # print "y: ", y
@@ -1533,7 +1537,7 @@ Shift + Right-Click:
 
 
     def DisplaySelection(self):
-        print(self.copiedSelection)
+        print((self.copiedSelection))
 
     def drawSquareSelectionYellow(self):
         self.BoardCanvas.delete(self.squareSelection)
@@ -1590,7 +1594,9 @@ Shift + Right-Click:
 
         
 
-    def addTileAtPos(self, x, y):
+    def addTileAtPos(self, f_x: float, f_y: float):
+        x = int(f_x)
+        y = int(f_y)
         
         i = self.selectedTileIndex
 
@@ -1627,12 +1633,12 @@ Shift + Right-Click:
         for p in self.board.Polyominoes:
             for tile in p.Tiles:
                 if self.board.coordToTile[tile.x][tile.y] != tile:
-                    print "ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n",
+                    print("ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n", end=' ')
                     verified = False
 
         for tile in self.board.ConcreteTiles:
             if self.board.coordToTile[tile.x][tile.y] != tile:
-                print "ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n",
+                print("ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n", end=' ')
                 verified = False
 
         # if verified:
@@ -1645,7 +1651,7 @@ Shift + Right-Click:
 
 
     def stepAllTiles(self, direction):
-        print "STEPPING", direction 
+        print("STEPPING", direction) 
         dx = 0
         dy = 0
 
@@ -1771,7 +1777,7 @@ Shift + Right-Click:
         self.tumbleGUI.setTilesFromEditor(self.board, self.glue_data, self.prevTileList, self.board.Cols, self.board.Rows)
 
     def saveTileConfig(self):
-        filename = tkFileDialog.asksaveasfilename()
+        filename = six.moves.tkinter_filedialog.asksaveasfilename()
         tile_config = ET.Element("TileConfiguration")
         board_size = ET.SubElement(tile_config, "BoardSize")
         glue_func = ET.SubElement(tile_config, "GlueFunction")
@@ -1907,7 +1913,7 @@ Shift + Right-Click:
                     command = ET.SubElement(commands, "Command")
                     command.set("name", str(c[0]))
                     command.set("filename", str(c[1]))
-                    print "Name: ", c[0],", Filename: ", c[1]
+                    print("Name: ", c[0],", Filename: ", c[1])
                         
         # print tile_config
         mydata = ET.tostring(tile_config)

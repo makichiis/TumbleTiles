@@ -3,14 +3,16 @@
 # 2018
 
 
+from __future__ import absolute_import
+from __future__ import print_function
 import copy
 import threading
 
-from Tkinter import *
-import ttk
-import tkFileDialog
-import tkMessageBox
-import tkColorChooser
+from six.moves.tkinter import *
+import six.moves.tkinter_ttk
+import six.moves.tkinter_filedialog
+import six.moves.tkinter_messagebox
+import six.moves.tkinter_colorchooser
 import xml.etree.ElementTree as ET
 import random
 import time
@@ -26,6 +28,7 @@ import sys
 
 
 from PIL import Image, ImageDraw
+from six.moves import range
 # https://pypi.python.org/pypi/pyscreenshot
 
 try:
@@ -103,7 +106,7 @@ class myThread (threading.Thread):
 
                     time.sleep(self.counter)
                     self.tg.MoveDirection(self.f[x])
-                    print self.f[x], " - ",
+                    print(self.f[x], " - ", end=' ')
                     # self.tg.w.update_idletasks()
         else:
             for x in range(0, len(self.f)):
@@ -112,7 +115,7 @@ class myThread (threading.Thread):
 
                 time.sleep(self.counter)
                 self.tg.MoveDirection(self.f[x])
-                print self.f[x], " - ",
+                print(self.f[x], " - ", end=' ')
                 # self.tg.w.update_idletasks()
         self.tg.reinitialzeRunScript()
 
@@ -394,7 +397,7 @@ class VideoExport:
         # Create a progres bar to show status of video export
 
         self.progress_var = DoubleVar() 
-        self.progress=ttk.Progressbar(self.t,orient=HORIZONTAL,variable=self.progress_var,length=260,mode='determinate')
+        self.progress=six.moves.tkinter_ttk.Progressbar(self.t,orient=HORIZONTAL,variable=self.progress_var,length=260,mode='determinate')
         self.progress.place(x=50, y=175)
         
         # Place export button    
@@ -833,7 +836,7 @@ class tumblegui:
         self.textcolor = "#000000"
 
         self.callGridDraw()
-        self.CreateInitial()
+        #self.CreateInitial()
         self.glue_data = []
 
     def TestThreadDisplay(self):
@@ -860,7 +863,7 @@ class tumblegui:
             self.scriptmenu.entryconfigure(0, label='Stop Recording')
         elif RECORDING:
             self.scriptmenu.entryconfigure(0, label='Record Script')
-            filename = tkFileDialog.asksaveasfilename()
+            filename = six.moves.tkinter_filedialog.asksaveasfilename()
             file = open(filename, 'w+')
             file.write(SCRIPTSEQUENCE)
             file.close()
@@ -974,7 +977,7 @@ class tumblegui:
             def clear(): return os.system('cls')
             clear()
             for x in self.listOfCommands:
-                print x[0], " ", x[1]
+                print(x[0], " ", x[1])
 
 
         # if RECORDING:
@@ -1023,9 +1026,9 @@ class tumblegui:
             pass
 
     def performSequence(self, i):
-        print "some Function: ", i
-        print "Command Name: ", self.listOfCommands[i][0]
-        print "File Name: ", self.listOfCommands[i][1]
+        print("some Function: ", i)
+        print("Command Name: ", self.listOfCommands[i][0])
+        print("File Name: ", self.listOfCommands[i][1])
         #file = open(self.listOfCommands[i][1], "r")
 
         self.scriptmenu.entryconfigure(1, label='Stop Script')
@@ -1084,19 +1087,19 @@ class tumblegui:
 
     def addSequence(self):
         if(self.newCommandFile.get() == "No File Selected"):
-            print "No File Seleceted"
+            print("No File Seleceted")
         elif(self.newCommandName.get().strip() == ""):
-            print "No Name Entered"
+            print("No Name Entered")
         else:
-            print "There was a file Selected: ", self.newCommandFile.get()
-            print "Command Name Entered: ", self.newCommandName.get()
+            print("There was a file Selected: ", self.newCommandFile.get())
+            print("Command Name Entered: ", self.newCommandName.get())
 
             filename = self.newCommandFile.get()
             file = open(filename, "r")
             script = file.readlines()[0].rstrip('\n')
             sequence = ""
             for x in range(0, len(script)):
-                print script[x], " - ",
+                print(script[x], " - ", end=' ')
                 sequence = sequence + script[x]
                 # self.tg.w.update_idletasks()
 
@@ -1240,7 +1243,7 @@ class tumblegui:
                     copy.deepcopy(self.board.Polyominoes))
                 self.CurrentState = self.maxStates - 1
             else:
-                print "Removing some states 1"
+                print("Removing some states 1")
                 self.ApplyUndo()
 
                 self.stateTmpSaves.append(
@@ -1254,7 +1257,7 @@ class tumblegui:
                 self.CurrentState = self.CurrentState + 1
 
             else:
-                print "Removing some states 2"
+                print("Removing some states 2")
                 self.ApplyUndo()
 
                 self.stateTmpSaves.append(
@@ -1264,9 +1267,9 @@ class tumblegui:
     def ApplyUndo(self):
         global RECORDING
         global SCRIPTSEQUENCE
-        print "Applying Undo"
+        print("Applying Undo")
         for x in range(0, len(self.stateTmpSaves) - self.CurrentState - 1):
-            print "x :", x
+            print("x :", x)
             self.stateTmpSaves.pop()
             if RECORDING:
                 SCRIPTSEQUENCE = SCRIPTSEQUENCE[:-1]
@@ -1278,11 +1281,11 @@ class tumblegui:
         else:
 
             self.CurrentState = self.CurrentState - 1
-            print "Current is, ", self.CurrentState, "after"
+            print("Current is, ", self.CurrentState, "after")
             #deleteTumbleTiles(self.board, self.board.Cols, self.board.Rows, self.w, TILESIZE, self.textcolor, self.gridcolor, self.tkDRAWGRID.get(), self.tkSHOWLOC.get())
             self.board.Polyominoes = copy.deepcopy(
                 self.stateTmpSaves[self.CurrentState])
-            print "undo - ", self.CurrentState
+            print("undo - ", self.CurrentState)
             self.callCanvasRedrawTumbleTiles()
 
     def Redo(self):
@@ -1293,7 +1296,7 @@ class tumblegui:
 
         else:
             self.CurrentState = self.CurrentState + 1
-            print "redo", self.CurrentState
+            print("redo", self.CurrentState)
             self.board.Polyominoes = copy.deepcopy(
                 self.stateTmpSaves[self.CurrentState])
             self.callCanvasRedrawTumbleTiles()
@@ -1462,7 +1465,7 @@ class tumblegui:
 
     def changecanvas(self):
         try:
-            result = tkColorChooser.askcolor(title="Background Color")
+            result = six.moves.tkinter_colorchooser.askcolor(title="Background Color")
             if result[0] is not None:
                 self.w.config(background=result[1])
         except BaseException:
@@ -1470,7 +1473,7 @@ class tumblegui:
 
     def changegridcolor(self):
         try:
-            result = tkColorChooser.askcolor(title="Grid Color")
+            result = six.moves.tkinter_colorchooser.askcolor(title="Grid Color")
             if result[0] is not None:
                 self.gridcolor = result[1]
                 self.callCanvasRedraw()
@@ -1641,7 +1644,10 @@ class tumblegui:
         f.close()
 
     def createSvg(self):
-        filename = tkFileDialog.asksaveasfilename()
+        filename = six.moves.tkinter_filedialog.asksaveasfilename(confirmoverwrite=True, defaultextension=".svg")
+        if not '.' in filename:
+            filename += ".svg"
+
         tile_config = ET.Element("TileConfiguration")
         board_size = ET.SubElement(tile_config, "BoardSize")
         glue_func = ET.SubElement(tile_config, "GlueFunction")
@@ -1653,7 +1659,7 @@ class tumblegui:
         p_tiles = ET.SubElement(tile_config, "PreviewTiles")
         if len(self.prevTileList) != 0:
             for td in self.prevTileList:
-                print(td.color)
+                print((td.color))
                 if td.glues == [] or len(td.glues) == 0:
                     td.glues = [0, 0, 0, 0]
 
@@ -1753,10 +1759,11 @@ class tumblegui:
 
         #print tile_config
         mydata = ET.tostring(tile_config)
-        file = open("tt2svg/tmp.xml", "w")
+        file = open("tt2svg/tmp.xml", "wb")
         file.write(mydata)
         file.close()
-        self.data2SVG(self.parseFile2("tt2svg/tmp.xml"), filename + ".svg")
+        
+        self.data2SVG(self.parseFile2("tt2svg/tmp.xml"), filename)
 
     def newBoard(self):
         del self.board.Polyominoes[:]
@@ -1901,8 +1908,8 @@ class tumblegui:
                 if not LOGFILE.closed:
                     LOGFILE.close()
         except Exception as e:
-            print "Could not log"
-            print e
+            print("Could not log")
+            print(e)
 
     def Log(self, stlog):
         global LOGFILE
@@ -1951,6 +1958,29 @@ class tumblegui:
                                        ")", fill=self.gridcolor, font=('', TILESIZE /
                                                                        5))
 
+import time 
+from pypresence import Presence 
+
+CLIENT_ID="1389791499369054309"
+IMAGE_KEY="tumble512"
+start_time = int(time.time())
+rpc = Presence(CLIENT_ID)
+rpc.connect()
+
+def update_presence():
+    # Update Rich Presence with current window title
+    try:
+        rpc.update(
+            details="Tumbling they Tiles",
+            large_image=IMAGE_KEY,
+            large_text="Tumbling they Tiles",
+            start=start_time
+        )
+    except Exception as e:
+        print(f"Error updating presence: {e}")
+    
+    root.after(15000, update_presence)
+
 
 if __name__ == "__main__":
 
@@ -1966,4 +1996,6 @@ if __name__ == "__main__":
     # root.geometry('300x300')
     mainwin = tumblegui(root)
 
+    update_presence()
+    root.after(15000, update_presence)
     mainloop()

@@ -1,5 +1,7 @@
-from Tkinter import *
+from __future__ import absolute_import
+from six.moves.tkinter import *
 from PIL import Image, ImageDraw
+from six.moves import range
 
 
 def redrawCanvas(board, boardwidth, boardheight, canvas, tilesize, textcolor = "#000000", gridcolor = "#000000", b_drawGrid = False, b_drawLoc = False):
@@ -17,16 +19,16 @@ def redrawCanvas(board, boardwidth, boardheight, canvas, tilesize, textcolor = "
             
             if tile.glues[0] != "None":
                 #north
-                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize/2, tilesize*tile.y + tilesize/5, text = tile.glues[0], fill=textcolor, font=('',tilesize/5)) )
+                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize//2, tilesize*tile.y + tilesize//5, text = tile.glues[0], fill=textcolor, font=('',tilesize//5)) )
             if tile.glues[1] != "None": 
                 #east
-                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize - tilesize/5, tilesize*tile.y + tilesize/2, text = tile.glues[1], fill=textcolor, font=('',tilesize/5)))
+                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize - tilesize//5, tilesize*tile.y + tilesize//2, text = tile.glues[1], fill=textcolor, font=('',tilesize//5)))
             if tile.glues[2] != "None": 
                 #south
-                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize/2, tilesize*tile.y+ tilesize - tilesize/5, text = tile.glues[2], fill=textcolor, font=('',tilesize/5) ))
+                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize//2, tilesize*tile.y+ tilesize - tilesize//5, text = tile.glues[2], fill=textcolor, font=('',tilesize//5) ))
             if tile.glues[3] != "None": 
                 #west
-                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize/5, tilesize*tile.y + tilesize/2, text = tile.glues[3], fill=textcolor, font=('',tilesize/5) ))
+                board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize//5, tilesize*tile.y + tilesize//2, text = tile.glues[3], fill=textcolor, font=('',tilesize//5) ))
 
     for c in board.ConcreteTiles:
         canvas.create_rectangle(tilesize*c.x, tilesize*c.y, tilesize*c.x + tilesize, tilesize*c.y + tilesize, fill = "#686868")
@@ -97,16 +99,16 @@ def redrawTumbleTiles(board, boardwidth, boardheight, canvas, tilesize, textcolo
                 # DRAW THE GLUES
                 if tile.glues[0] != "None":
                     #north
-                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize/2, tilesize*tile.y + tilesize/5, text = tile.glues[0], fill=textcolor, font=('',tilesize/5)) )
+                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize//2, tilesize*tile.y + tilesize//5, text = tile.glues[0], fill=textcolor, font=('',tilesize//5)) )
                 if tile.glues[1] != "None": 
                     #east
-                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize - tilesize/5, tilesize*tile.y + tilesize/2, text = tile.glues[1], fill=textcolor, font=('',tilesize/5)))
+                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize - tilesize//5, tilesize*tile.y + tilesize//2, text = tile.glues[1], fill=textcolor, font=('',tilesize//5)))
                 if tile.glues[2] != "None": 
                     #south
-                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize/2, tilesize*tile.y+ tilesize - tilesize/5, text = tile.glues[2], fill=textcolor, font=('',tilesize/5) ))
+                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize//2, tilesize*tile.y+ tilesize - tilesize//5, text = tile.glues[2], fill=textcolor, font=('',tilesize//5) ))
                 if tile.glues[3] != "None": 
                     #west
-                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize/5, tilesize*tile.y + tilesize/2, text = tile.glues[3], fill=textcolor, font=('',tilesize/5) ))
+                    board.glueText.append(canvas.create_text(tilesize*tile.x + tilesize//5, tilesize*tile.y + tilesize//2, text = tile.glues[3], fill=textcolor, font=('',tilesize//5) ))
             
         # for c in board.ConcreteTiles:
         #     canvas.create_rectangle(tilesize*c.x, tilesize*c.y, tilesize*c.x + tilesize, tilesize*c.y + tilesize, fill = "#686868")
