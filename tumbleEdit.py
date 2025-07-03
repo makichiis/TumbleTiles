@@ -401,11 +401,11 @@ Shift + Right-Click:
         self.prevFrame,
         borderwidth=1,
         relief=FLAT,
-        width=1000,
+        width=100,
          height=NEWTILEWINDOW_H - 40)
 
         # Canvas that will draw color preview
-        self.colorPrevCanvas = Canvas(self.colorFrame, width=1000, height=1000)
+        self.colorPrevCanvas = Canvas(self.colorFrame, width=100, height=100)
 
         self.drawColorPreview()
 
@@ -527,7 +527,7 @@ Shift + Right-Click:
         self.addTileWindow,
         borderwidth=1,
         relief=FLAT,
-        width=1000,
+        width=200,
         height=NEWTILEWINDOW_H - 40)
 
             # Frame that will hold the text boxes that the glues will be entered it
@@ -541,11 +541,11 @@ Shift + Right-Click:
         self.prevFrame,
         borderwidth=1,
         relief=FLAT,
-        width=1000,
+        width=100,
         height=NEWTILEWINDOW_H - 40)
 
         # Canvas that will draw color preview
-        self.colorPrevCanvas = Canvas(self.colorFrame, width=1000, height=1000)
+        self.colorPrevCanvas = Canvas(self.colorFrame, width=100, height=100)
 
         self.drawColorPreviewEdit(tile.color)
         CURRENTNEWTILECOLOR = tile.color
@@ -811,9 +811,9 @@ Shift + Right-Click:
             frame_size = y + size + 10
 
                 # frame_size = (PREVTILESIZE)*len(self.prevTileList) + 20
-        self.TilesFrame.config(width=1000, height=1000)
+        self.TilesFrame.config(width=100, height=500)
         self.tilePrevCanvas.config(
-        width=1000, height=frame_size, scrollregion=(
+        width=100, height=frame_size, scrollregion=(
         0, 0, 200, frame_size))
 
         self.TilesFrame.pack(side=TOP)
