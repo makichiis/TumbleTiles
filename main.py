@@ -9,6 +9,7 @@ import copy
 import threading
 
 from six.moves.tkinter import *
+from tkinter import messagebox
 import six.moves.tkinter_ttk
 import six.moves.tkinter_filedialog
 import six.moves.tkinter_messagebox
@@ -102,7 +103,6 @@ class myThread (threading.Thread):
 
             time.sleep(self.counter)
             self.tg.MoveDirection(c)
-        ...
 
     def run(self):
         if self.tg.tkLoopScript.get():
@@ -151,6 +151,92 @@ class MsgAbout:
         self.t.transient(self.parent)
         # Display the window and wait for it to close
         self.t.wait_window(self.t)
+
+
+class ScriptSettings:
+    def __init__(self, parent):
+        global SCRIPTSPEED 
+
+        self.parent = parent 
+        self.top_level = Toplevel(self.parent)
+        self.top_level.resizable(False, False)
+        self.top_level.title("Script Settings")
+
+        self.tkSCRIPTSPEED = StringVar()
+        self.tkSCRIPTSPEED.set(str(SCRIPTSPEED))
+
+        self.script_speed_label = Label(
+            self.top_level,
+            text="Script Speed").grid(
+                row=0,
+                column=0,
+                sticky=W,
+                padx=5,
+                pady=5)
+        self.script_speed_input = Spinbox(
+            self.top_level,
+            from_=1.0,
+            to=1000.0,
+            width=5,
+            increment=0.1,
+            textvariable=self.tkSCRIPTSPEED).grid(
+                row=0,
+                column=1,
+                padx=5,
+                pady=5)
+        
+        # buttons
+        Button(
+            self.top_level,
+            text="Cancel",
+            command=self.top_level.destroy).grid(
+            row=1,
+            column=0,
+            padx=5,
+            pady=5)
+        Button(
+            self.top_level,
+            text="Apply",
+            command=self.apply).grid(
+            row=1,
+            column=1,
+            padx=5,
+            pady=5)
+
+        Label(
+            self.top_level, 
+            text="Note: Must reload script after changes.", 
+            wraplength=145, 
+            justify="left").grid(
+                row=2, 
+                column=0, 
+                columnspan=2, 
+                padx=5, 
+                pady=5, 
+                sticky=W)
+        
+        self.top_level.focus_set()
+        self.top_level.grab_set()
+        self.top_level.transient(self.parent)
+        self.top_level.wait_window(self.top_level)
+        
+    def config_error(self):
+        messagebox.showerror("Error", "Script speed must be a float between 1.0 and 1000.0")
+
+    def apply(self):
+        global SCRIPTSPEED
+        
+        try:
+            SCRIPTSPEED = float(self.tkSCRIPTSPEED.get())
+        except ValueError:
+            self.config_error()
+            return
+
+        if SCRIPTSPEED < 1.0 or SCRIPTSPEED > 1000.0:
+            self.config_error()
+            return
+
+        self.top_level.destroy()
 
 
 class Settings:
@@ -706,6 +792,8 @@ class tumblegui:
                 label="Export Video..",
                 command=self.openVideoExportWindow,
                 state=DISABLED)
+        self.scriptmenu.add_separator()
+        self.scriptmenu.add_command(label="Script Settings", command=self.scriptSettings) #TODO: Script speed modifier
 
         self.menubar.add_cascade(label="File", menu=self.filemenu)
         self.menubar.add_cascade(label="Settings", menu=self.settingsmenu)
@@ -847,6 +935,10 @@ class tumblegui:
     def setSingleStep(self):
         TT.SINGLESTEP = self.tkSTEPVAR.get()
 
+    def scriptSettings(self):
+        ScriptSettings(self.root)
+        ...
+
     def recordScript(self):
         global RECORDING
         global SCRIPTSEQUENCE
@@ -898,9 +990,12 @@ class tumblegui:
 
     # Call the sequence runner
     def runScript(self, file):
+        global SCRIPTSPEED
+
         self.scriptmenu.entryconfigure(1, label='Stop Script')
         script = file.readlines()[0].rstrip('\n')
-        self.thread1.counter = 0.0000001
+        #self.thread1.counter = 0.0000001
+        self.thread1.counter = (1 / SCRIPTSPEED)
         self.thread1.setScript(script)
         self.thread1.start()
         # self.runSequence(script)
