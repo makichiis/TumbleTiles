@@ -858,6 +858,7 @@ class tumblegui:
         elif RECORDING:
             self.scriptmenu.entryconfigure(0, label='Record Script')
             filename = six.moves.tkinter_filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Plain Text", ".txt")])
+            if not file: return
             file = open(filename, 'w+')
             file.write(SCRIPTSEQUENCE)
             file.close()
@@ -1640,6 +1641,7 @@ class tumblegui:
 
     def createSvg(self):
         filename = six.moves.tkinter_filedialog.asksaveasfilename(confirmoverwrite=True, defaultextension=".svg", filetypes=[("Scalable Vector Graphics", ".svg")])
+        if not filename: return
         if not '.' in filename:
             filename += ".svg"
 
