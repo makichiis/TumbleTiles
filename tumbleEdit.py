@@ -1777,7 +1777,8 @@ Shift + Right-Click:
         self.tumbleGUI.setTilesFromEditor(self.board, self.glue_data, self.prevTileList, self.board.Cols, self.board.Rows)
 
     def saveTileConfig(self):
-        filename = six.moves.tkinter_filedialog.asksaveasfilename()
+        filename = six.moves.tkinter_filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("eXtensible Markup Language", ".xml")])
+        if not filename: return
         tile_config = ET.Element("TileConfiguration")
         board_size = ET.SubElement(tile_config, "BoardSize")
         glue_func = ET.SubElement(tile_config, "GlueFunction")
