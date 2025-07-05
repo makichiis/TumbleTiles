@@ -846,8 +846,8 @@ Shift + Right-Click:
         x = (event.x / self.tile_size)
         y = (event.y / self.tile_size)
 
-        x = int(self.BoardCanvas.canvasx(event.x)) / self.tile_size
-        y = int(self.BoardCanvas.canvasy(event.y)) / self.tile_size
+        x = int(self.BoardCanvas.canvasx(event.x)) // self.tile_size
+        y = int(self.BoardCanvas.canvasy(event.y)) // self.tile_size
 
         # print( "EVENT: ",  event.state )
 
