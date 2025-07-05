@@ -83,41 +83,35 @@ MODS = {
 
 
 class myThread (threading.Thread):
-    def __init__(self, threadID, name, counter, tg):
+    def __init__(self, threadID, name, counter, tg, onstop=lambda: ...):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
         self.counter = counter
         self.tg = tg
         self.f = None
+        self.onstop = onstop
 
     def setScript(self, f):
         self.f = f
 
+    def run_once_(self):
+        for c in self.f:
+            if self.counter == 0:
+                break
+
+            time.sleep(self.counter)
+            self.tg.MoveDirection(c)
+        ...
+
     def run(self):
         if self.tg.tkLoopScript.get():
-            while True:
-                if self.counter == 0:
-                    break
-
-                for x in range(0, len(self.f)):
-                    if self.counter == 0:
-                        break
-
-                    time.sleep(self.counter)
-                    self.tg.MoveDirection(self.f[x])
-                    print(self.f[x], " - ", end=' ')
-                    # self.tg.w.update_idletasks()
+            while self.tg.tkLoopScript.get() and self.counter != 0:
+                self.run_once_()
         else:
-            for x in range(0, len(self.f)):
-                if self.counter == 0:
-                    break
+            self.run_once_()
 
-                time.sleep(self.counter)
-                self.tg.MoveDirection(self.f[x])
-                print(self.f[x], " - ", end=' ')
-                # self.tg.w.update_idletasks()
-        self.tg.reinitialzeRunScript()
+        self.onstop()
 
 
 class MsgAbout:
@@ -513,7 +507,7 @@ class VideoExport:
 class tumblegui:
     def __init__(self, root):
         global TILESIZE
-        self.thread1 = myThread(1, "Thread-1", 0, self)
+        self.thread1 = myThread(1, "Thread-1", 0, self, self.reinitializeRunScript)
         self.stateTmpSaves = []
         self.polyTmpSaves = []
 
@@ -869,10 +863,10 @@ class tumblegui:
             file.close()
             RECORDING = False
 
-    def reinitialzeRunScript(self):
+    def reinitializeRunScript(self):
         self.thread1.counter = 0
-        self.thread1 = myThread(1, "Thread-1", 0, self)
-        self.scriptmenu.entryconfigure(1, label='RunScript')
+        self.thread1 = myThread(1, "Thread-1", 0, self, self.reinitializeRunScript)
+        self.scriptmenu.entryconfigure(1, label='Run Script')
 
     # Gets the path of the script from the gui file browser
     def loadScript(self):
@@ -883,7 +877,7 @@ class tumblegui:
             file = open(filename, "r")
             self.runScript(file)
         else:
-            self.reinitialzeRunScript()
+            self.reinitializeRunScript()
 
     # Returns a PIL image object of the board by calling the function in boardgui.py
     def getImageOfBoard(self, tileResInt, lineWidthInt):
@@ -912,6 +906,7 @@ class tumblegui:
 
     # Steps through string in script and tumbles in that direction
 
+    # TODO: Integrate into sequence widget
     def runSequence(self, sequence):
         global SCRIPTSPEED
 
