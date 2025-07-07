@@ -1,8 +1,6 @@
 from __future__ import absolute_import
-from six.moves.tkinter import *
+from tkinter import *
 from PIL import Image, ImageDraw
-from six.moves import range
-
 
 def redrawCanvas(board, boardwidth, boardheight, canvas, tilesize, textcolor = "#000000", gridcolor = "#000000", b_drawGrid = False, b_drawLoc = False):
     canvas.delete(ALL)

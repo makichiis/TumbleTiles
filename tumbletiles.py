@@ -9,7 +9,6 @@ import copy
 import sys
 import inspect
 import random
-from six.moves import range
 
 
 DEBUGGING = False

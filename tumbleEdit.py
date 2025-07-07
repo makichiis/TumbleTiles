@@ -1,12 +1,12 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import copy
-from six.moves.tkinter import *
-import six.moves.tkinter_font
+from tkinter import *
+import tkinter.font
 from scrollableFrame import VerticalScrolledFrame
-import six.moves.tkinter_filedialog
-import six.moves.tkinter_messagebox
-import six.moves.tkinter_colorchooser
+import tkinter.filedialog
+import tkinter.messagebox
+import tkinter.colorchooser
 import xml.etree.ElementTree as ET
 import tumbletiles as TT
 import main as TG
@@ -16,9 +16,8 @@ import time
 import os
 import sys
 import math
-from six.moves.tkinter_colorchooser import askcolor
+from tkinter.colorchooser import askcolor
 import numpy as np
-from six.moves import range
 
 # the x and y coordinate that the preview tiles will begin to be drawn on
 
@@ -243,7 +242,7 @@ Shift + Right-Click:
 
                 """
         self.T.insert(END, quote)
-        myFont = six.moves.tkinter_font.Font(
+        myFont = tkinter.font.Font(
         family='Helvetica', size=12, weight='bold')
         self.T.config(state=DISABLED, font=myFont)
 
@@ -1777,7 +1776,7 @@ Shift + Right-Click:
         self.tumbleGUI.setTilesFromEditor(self.board, self.glue_data, self.prevTileList, self.board.Cols, self.board.Rows)
 
     def saveTileConfig(self):
-        filename = six.moves.tkinter_filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("eXtensible Markup Language", ".xml")])
+        filename = tkinter.filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("eXtensible Markup Language", ".xml")])
         if not filename: return
         tile_config = ET.Element("TileConfiguration")
         board_size = ET.SubElement(tile_config, "BoardSize")

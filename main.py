@@ -8,12 +8,12 @@ from __future__ import print_function
 import copy
 import threading
 
-from six.moves.tkinter import *
+from tkinter import *
 from tkinter import messagebox
-import six.moves.tkinter_ttk
-import six.moves.tkinter_filedialog
-import six.moves.tkinter_messagebox
-import six.moves.tkinter_colorchooser
+import tkinter.ttk 
+import tkinter.filedialog
+import tkinter.messagebox
+import tkinter.colorchooser
 import xml.etree.ElementTree as ET
 import random
 import time
@@ -83,7 +83,7 @@ MODS = {
 }
 
 
-class myThread (threading.Thread):
+class ScriptExecutorThread(threading.Thread):
     def __init__(self, threadID, name, counter, tg, onstop=lambda: ...):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -101,7 +101,7 @@ class myThread (threading.Thread):
             if self.counter == 0:
                 break
 
-            time.sleep(self.counter)
+            time.sleep(self.counter / 1000)
             self.tg.MoveDirection(c)
 
     def run(self):
@@ -167,7 +167,7 @@ class ScriptSettings:
 
         self.script_speed_label = Label(
             self.top_level,
-            text="Script Speed").grid(
+            text="Time per Step (ms)").grid(
                 row=0,
                 column=0,
                 sticky=W,
@@ -175,8 +175,8 @@ class ScriptSettings:
                 pady=5)
         self.script_speed_input = Spinbox(
             self.top_level,
-            from_=1.0,
-            to=1000.0,
+            from_=1,
+            to=1000,
             width=5,
             increment=0.1,
             textvariable=self.tkSCRIPTSPEED).grid(
@@ -221,7 +221,7 @@ class ScriptSettings:
         self.top_level.wait_window(self.top_level)
         
     def config_error(self):
-        messagebox.showerror("Error", "Script speed must be a float between 1.0 and 1000.0")
+        messagebox.showerror("Error", "Script speed must be a number between 1 and 1000")
 
     def apply(self):
         global SCRIPTSPEED
@@ -232,7 +232,7 @@ class ScriptSettings:
             self.config_error()
             return
 
-        if SCRIPTSPEED < 1.0 or SCRIPTSPEED > 1000.0:
+        if SCRIPTSPEED < 1 or SCRIPTSPEED > 1000:
             self.config_error()
             return
 
@@ -477,7 +477,7 @@ class VideoExport:
         # Create a progres bar to show status of video export
 
         self.progress_var = DoubleVar() 
-        self.progress=six.moves.tkinter_ttk.Progressbar(self.t,orient=HORIZONTAL,variable=self.progress_var,length=260,mode='determinate')
+        self.progress=tkinter.ttk.Progressbar(self.t,orient=HORIZONTAL,variable=self.progress_var,length=260,mode='determinate')
         self.progress.place(x=50, y=175)
         
         # Place export button    
@@ -593,7 +593,7 @@ class VideoExport:
 class tumblegui:
     def __init__(self, root):
         global TILESIZE
-        self.thread1 = myThread(1, "Thread-1", 0, self, self.reinitializeRunScript)
+        self.thread1 = ScriptExecutorThread(1, "Thread-1", 0, self, self.reinitializeRunScript)
         self.stateTmpSaves = []
         self.polyTmpSaves = []
 
@@ -793,7 +793,7 @@ class tumblegui:
                 command=self.openVideoExportWindow,
                 state=DISABLED)
         self.scriptmenu.add_separator()
-        self.scriptmenu.add_command(label="Script Settings", command=self.scriptSettings) #TODO: Script speed modifier
+        self.scriptmenu.add_command(label="Settings", command=self.scriptSettings)
 
         self.menubar.add_cascade(label="File", menu=self.filemenu)
         self.menubar.add_cascade(label="Settings", menu=self.settingsmenu)
@@ -949,7 +949,7 @@ class tumblegui:
             self.scriptmenu.entryconfigure(0, label='Stop Recording')
         elif RECORDING:
             self.scriptmenu.entryconfigure(0, label='Record Script')
-            filename = six.moves.tkinter_filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Plain Text", ".txt")])
+            filename = tkinter.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Plain Text", ".txt")])
             if not file: return
             file = open(filename, 'w+')
             file.write(SCRIPTSEQUENCE)
@@ -958,7 +958,7 @@ class tumblegui:
 
     def reinitializeRunScript(self):
         self.thread1.counter = 0
-        self.thread1 = myThread(1, "Thread-1", 0, self, self.reinitializeRunScript)
+        self.thread1 = ScriptExecutorThread(1, "Thread-1", 0, self, self.reinitializeRunScript)
         self.scriptmenu.entryconfigure(1, label='Run Script')
 
     # Gets the path of the script from the gui file browser
@@ -995,7 +995,7 @@ class tumblegui:
         self.scriptmenu.entryconfigure(1, label='Stop Script')
         script = file.readlines()[0].rstrip('\n')
         #self.thread1.counter = 0.0000001
-        self.thread1.counter = (1 / SCRIPTSPEED)
+        self.thread1.counter = SCRIPTSPEED
         self.thread1.setScript(script)
         self.thread1.start()
         # self.runSequence(script)
@@ -1556,7 +1556,7 @@ class tumblegui:
 
     def changecanvas(self):
         try:
-            result = six.moves.tkinter_colorchooser.askcolor(title="Background Color")
+            result = tkinter.colorchooser.askcolor(title="Background Color")
             if result[0] is not None:
                 self.w.config(background=result[1])
         except BaseException:
@@ -1564,7 +1564,7 @@ class tumblegui:
 
     def changegridcolor(self):
         try:
-            result = six.moves.tkinter_colorchooser.askcolor(title="Grid Color")
+            result = tkinter.colorchooser.askcolor(title="Grid Color")
             if result[0] is not None:
                 self.gridcolor = result[1]
                 self.callCanvasRedraw()
@@ -1735,7 +1735,7 @@ class tumblegui:
         f.close()
 
     def createSvg(self):
-        filename = six.moves.tkinter_filedialog.asksaveasfilename(confirmoverwrite=True, defaultextension=".svg", filetypes=[("Scalable Vector Graphics", ".svg")])
+        filename = tkinter.filedialog.asksaveasfilename(confirmoverwrite=True, defaultextension=".svg", filetypes=[("Scalable Vector Graphics", ".svg")])
         if not filename: return
         if not '.' in filename:
             filename += ".svg"
