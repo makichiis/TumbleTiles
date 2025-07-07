@@ -33,6 +33,7 @@ def lineno():
 #tile class for individual tiles
 class Tile:
     def __init__(self):
+        global COLOR
         self.symbol = ' '
         self.id = 0 #id of the polyomino that it is in
         self.x = 0

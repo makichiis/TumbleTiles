@@ -29,7 +29,6 @@ import sys
 
 
 from PIL import Image, ImageDraw
-from six.moves import range
 # https://pypi.python.org/pypi/pyscreenshot
 
 try:
