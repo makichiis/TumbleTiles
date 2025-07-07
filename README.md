@@ -5,6 +5,8 @@
 
 Implements the tumble tile model as designed by Robert Schweller and Tim Wylie. This project was done for the [Algorithmic Self-Assembly Research Group (ASARG)](https://asarg.hackresearch.com) at the University of Texas - Rio Grande Valley.
 
+Python 3.0 port and current developments are maintained by [Sarah Evans](https://github.com/makichiis).
+
 
 ### 1.1 Requirements ###
   * Required:
