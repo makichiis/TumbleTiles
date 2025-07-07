@@ -32,7 +32,3 @@ $ py main.py
 ### 1.4 Usage ###
   Running:
     >python main.py
-
-## NOTE(S)
-- The required version of `six` is outdated. If it fails to work for you, use the latest version, and open an issue if mistakes continue.
-
