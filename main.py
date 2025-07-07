@@ -63,7 +63,7 @@ TILESIZE = 12
 VERSION = "2.0"
 LASTLOADEDFILE = ""
 LASTLOADEDSCRIPT = ""
-SCRIPTSPEED = .3
+SCRIPTSPEED = 1
 RECORDING = False
 SCRIPTSEQUENCE = ""
 
@@ -965,6 +965,7 @@ class tumblegui:
         global LASTLOADEDSCRIPT
         if self.thread1.counter == 0:
             filename = getFile()
+            if not filename: return
             LASTLOADEDSCRIPT = filename
             file = open(filename, "r")
             self.runScript(file)
@@ -1006,7 +1007,7 @@ class tumblegui:
         global SCRIPTSPEED
 
         for x in range(0, len(sequence)):
-            time.sleep(SCRIPTSPEED)
+            time.sleep(SCRIPTSPEED / 1000)
             self.MoveDirection(sequence[x])
             # print sequence[x], " - ",
 
