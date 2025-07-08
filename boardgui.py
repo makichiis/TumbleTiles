@@ -124,5 +124,5 @@ def drawGrid(board, boardwidth, boardheight, canvas, tilesize, gridcolor = "#000
     if b_drawLoc == True:
         for row in range(boardheight):
             for col in range(boardwidth):
-                canvas.create_text(tilesize*(col+1) - tilesize/2, tilesize*(row+1) - tilesize/2, text = "("+str(row)+","+str(col)+")", fill=gridcolor,font=('',tilesize/5))
+                canvas.create_text(tilesize*(col+1) - tilesize//2, tilesize*(row+1) - tilesize//2, text = "("+str(row)+","+str(col)+")", fill=gridcolor,font=('',tilesize//5))
 

@@ -68,6 +68,7 @@ RECORDING = False
 SCRIPTSEQUENCE = ""
 
 
+
 # https://stackoverflow.com/questions/19861689/check-if-modifier-key-is-pressed-in-tkinter
 MODS = {
     0x0001: 'Shift',
@@ -101,7 +102,9 @@ class ScriptExecutorThread(threading.Thread):
                 break
 
             time.sleep(self.counter / 1000)
+            
             self.tg.MoveDirection(c)
+            
 
     def run(self):
         if self.tg.tkLoopScript.get():
@@ -565,7 +568,9 @@ class VideoExport:
             self.progress_var.set(float(x)/seqLen * 100)    # Update progress bar
             self.t.update()                                 # update toplevel window
            
+            
             self.tumbleGUI.MoveDirection(sequence[x], redraw= False) # Move the board in the specified direction
+            
 
             # Call function to get and image in memory of the current state of the board, passing it the tile resolution and the line width to use
             image = self.tumbleGUI.getImageOfBoard(self.tileResInt, lineWidthInt)
@@ -1008,7 +1013,9 @@ class tumblegui:
 
         for x in range(0, len(sequence)):
             time.sleep(SCRIPTSPEED / 1000)
+            
             self.MoveDirection(sequence[x])
+            
             # print sequence[x], " - ",
 
             self.w.update_idletasks()
@@ -1056,6 +1063,7 @@ class tumblegui:
         global RECORDING
         global SCRIPTSEQUENCE
 
+        
         if event.keysym == "Up":
             self.MoveDirection("N")
         elif event.keysym == "Right":
@@ -1069,6 +1077,7 @@ class tumblegui:
             clear()
             for x in self.listOfCommands:
                 print(x[0], " ", x[1])
+        
 
 
         # if RECORDING:
@@ -1098,6 +1107,8 @@ class tumblegui:
             self.reloadFile()
         # print(event.keysym)
 
+        
+
     def callback(self, event):
         global TILESIZE
 
@@ -1105,13 +1116,21 @@ class tumblegui:
             #print "clicked at", event.x, event.y
             if event.y <= 2 * TILESIZE and event.x > 2 * \
                     TILESIZE and event.x < TT.BOARDWIDTH * TILESIZE - 2 * TILESIZE:
+                
                 self.MoveDirection("N")
+                
             elif event.y >= TT.BOARDHEIGHT * TILESIZE - 2 * TILESIZE and event.x > 2 * TILESIZE and event.x < TT.BOARDWIDTH * TILESIZE - 2 * TILESIZE:
+                
                 self.MoveDirection("S")
+                
             elif event.x >= TT.BOARDWIDTH * TILESIZE - 2 * TILESIZE and event.y > 2 * TILESIZE and event.y < TT.BOARDHEIGHT * TILESIZE - 2 * TILESIZE:
+                
                 self.MoveDirection("E")
+                
             elif event.x <= 2 * TILESIZE and event.y > 2 * TILESIZE and event.y < TT.BOARDHEIGHT * TILESIZE - 2 * TILESIZE:
+                
                 self.MoveDirection("W")
+                 
 
         except BaseException:
             pass
@@ -1432,6 +1451,7 @@ class tumblegui:
 
         if redraw:    
             self.callCanvasRedrawTumbleTiles()
+
     # except Exception as e:
      #   print e
       #  print sys.exc_info()[0]
@@ -2065,4 +2085,5 @@ if __name__ == "__main__":
     # root.geometry('300x300')
     mainwin = tumblegui(root)
 
+    # TODO: For threading and mutexes: https://stackoverflow.com/a/54374873
     mainloop()
