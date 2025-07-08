@@ -865,18 +865,20 @@ Shift + Right-Click:
         #event.state == 4 means control is held
         #event.state == 6 means control is held and caps lock is on
         if event.state / 4 % 2 == 1:
+            # TODO: DRY the below line 
+            if self.highlighted_cross[0]: self.BoardCanvas.delete(*self.highlighted_cross)
             self.CtrlSelect(int(x), int(y))
             self.CURRENTSELECTIONX = int(x)
             self.CURRENTSELECTIONY = int(y)
             self.drawSquareSelectionGreen()
-            # TODO: DRY the below line 
-            if self.highlighted_cross[0]: self.BoardCanvas.delete(*self.highlighted_cross)
+            
 
         # TODO: Draw axes from corners of selection ?
 
         #event.state == 1 when shift is held
         #event.state == 3 when shift is held and caps lock is on
         elif event.state % 2 == 1:
+            if self.highlighted_cross[0]: self.BoardCanvas.delete(*self.highlighted_cross)
             if event.num == rightClick:
                     self.ShftSelect(x, y, False, False)
             else:
@@ -1062,7 +1064,7 @@ Shift + Right-Click:
                 self.SELECTIONY1 = temp
 
             self.drawSelection(self.SELECTIONX1, self.SELECTIONY1, self.SELECTIONX2, self.SELECTIONY2)
-
+            self.location_text.config(text=f"Selection: ({self.SELECTIONX1}, {self.SELECTIONY1}), ({self.SELECTIONX2}, {self.SELECTIONY2})")
 
 
 
