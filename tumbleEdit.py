@@ -284,11 +284,7 @@ Shift + Right-Click:
         self.scrollbarH.config(command=self.BoardCanvas.xview)
         self.BoardCanvas.pack(side=TOP)
         
-        self.location_text = Label(
-            self.BoardFrame,
-            text="(0, 0)",
-        )
-        self.location_text.pack()
+        
 
         # Used to tell when a tile is trying to be placed, will send the event to
         # onBoardClick to determine the location
@@ -337,7 +333,11 @@ Shift + Right-Click:
             200,
              2000))
         
-        
+        self.location_text = Label(
+            self.tileEditorFrame,
+            text="(0, 0)",
+        )
+        self.location_text.pack()
 
         self.scrollbarCanvasV = Scrollbar(self.TilesFrame)
         self.scrollbarCanvasV.pack(side=RIGHT, fill=Y)
