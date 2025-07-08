@@ -147,8 +147,9 @@ class Polyomino:
             else:
                 return False
         except Exception as e:
-            print("Glue Error")
-            print(sys.exc_info()[0])  
+            ...
+            # print("Glue Error")
+            # print(sys.exc_info()[0])  
     
     #moves every tile in the polyomino by one in the indicated direction
     def Move(self, direction):
@@ -259,6 +260,7 @@ class Board:
             self.coordToTile[tile.x][tile.y] = tile
 
             self.Polyominoes.append(p)
+            print(len(self.Polyominoes))
 
         elif DEBUGGING:
             print("tumbletiles.py - Board.Add(): Can not add tile. A tile already exists at this location - Line ", lineno(), "\n", end=' ')
@@ -352,7 +354,7 @@ class Board:
             while StepTaken == True:
                 StepTaken = self.Step(direction)
         else:
-            print("Someone doesn't know what they're doing")
+            print("Someone doesn't know what they're doing (You can only use ['N', 'E', 'S', 'W'] for glues)")
         self.ActivateGlues()
 
 
@@ -485,8 +487,10 @@ class Board:
                     self.coordToTile[tile.x][tile.y] = tile
 
 
-        
-        self.remapArray()
+        for p in self.Polyominoes: 
+            for tile in p.Tiles:
+                self.coordToTile[tile.x][tile.y] = tile
+        # self.remapArray()
 
         global FACTORYMODE
         global SINGLESTEP
@@ -539,7 +543,7 @@ class Board:
     # Assignes every tile to its new correct position in coordToTile
     def remapArray(self):
         self.coordToTile = [[None for x in range(self.Rows)] for y in range(self.Cols)]
-        for p in self.Polyominoes:
+        for p in self.Polyominoes: 
             for tile in p.Tiles:
                 self.coordToTile[tile.x][tile.y] = tile
         for conc in self.ConcreteTiles:
