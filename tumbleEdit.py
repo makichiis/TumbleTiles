@@ -159,6 +159,8 @@ class TileEditorGUI:
         self.menuBar.add_cascade(label="Option", menu=optionsMenu)
         self.newWindow.config(menu=self.menuBar)
 
+        
+
         # Create two frames, one to hold the board and the buttons, and one to
         # hold the tiles to be placed
         self.tileEditorFrame = Frame(
@@ -281,6 +283,12 @@ Shift + Right-Click:
         self.BoardCanvas.config(xscrollcommand=self.scrollbarH.set)
         self.scrollbarH.config(command=self.BoardCanvas.xview)
         self.BoardCanvas.pack(side=TOP)
+        
+        self.location_text = Label(
+            self.BoardFrame,
+            text="(0, 0)",
+        )
+        self.location_text.pack()
 
         # Used to tell when a tile is trying to be placed, will send the event to
         # onBoardClick to determine the location
@@ -328,6 +336,8 @@ Shift + Right-Click:
             0,
             200,
              2000))
+        
+        
 
         self.scrollbarCanvasV = Scrollbar(self.TilesFrame)
         self.scrollbarCanvasV.pack(side=RIGHT, fill=Y)
@@ -349,6 +359,8 @@ Shift + Right-Click:
         # draw the board on the canvas os
         self.popWinTiles()
         self.redrawPrev()
+
+        self.highlighted_cross = (None, None)
 
     # populates the array of tiles
 
@@ -852,14 +864,15 @@ Shift + Right-Click:
 
         #event.state == 4 means control is held
         #event.state == 6 means control is held and caps lock is on
-        #TODO: Diagnose root of type errors (why are x and y floats now?)
         if event.state / 4 % 2 == 1:
             self.CtrlSelect(int(x), int(y))
             self.CURRENTSELECTIONX = int(x)
             self.CURRENTSELECTIONY = int(y)
             self.drawSquareSelectionGreen()
+            # TODO: DRY the below line 
+            if self.highlighted_cross[0]: self.BoardCanvas.delete(*self.highlighted_cross)
 
-
+        # TODO: Draw axes from corners of selection ?
 
         #event.state == 1 when shift is held
         #event.state == 3 when shift is held and caps lock is on
@@ -880,7 +893,10 @@ Shift + Right-Click:
             self.CURRENTSELECTIONY = int(y)
             self.clearSelection()
             self.clearShiftSelection()
+
+            if self.highlighted_cross[0]: self.BoardCanvas.delete(self.highlighted_cross[0], self.highlighted_cross[1])
             self.drawSquareSelectionRed()
+            self.HighlightCross(self.CURRENTSELECTIONX, self.CURRENTSELECTIONY)
 
             # print(self.add_state)
             if self.add_state:
@@ -1188,6 +1204,18 @@ Shift + Right-Click:
                 self.removeTileAtPos(x,y, False)
         self.redrawPrev()
         self.board.remapArray()
+
+
+    def HighlightCross(self, x1, y1):
+        x_axis = ((0, self.tile_size * y1), (self.tile_size * self.width, self.tile_size * (y1 + 1)))
+        y_axis = ((self.tile_size * x1, 0), (self.tile_size * (x1 + 1), self.tile_size * self.height))
+        
+        # pls blend 
+        self.highlighted_cross = (
+            self.BoardCanvas.create_rectangle(x_axis[0][0], x_axis[0][1], x_axis[1][0], x_axis[1][1], fill="#2EB8B8", stipple="gray25"),
+            self.BoardCanvas.create_rectangle(y_axis[0][0], y_axis[0][1], y_axis[1][0], y_axis[1][1], fill="#2EB8B8", stipple="gray25"),
+        )
+        self.location_text.config(text=f"({x1}, {y1})")
 
 
     # When you control click in two locations this method will draw the resulting rectangle
@@ -1549,7 +1577,7 @@ Shift + Right-Click:
     def drawSquareSelectionGreen(self):
         self.BoardCanvas.delete(self.squareSelection)
         self.squareSelection = self.BoardCanvas.create_rectangle(self.tile_size*self.CURRENTSELECTIONX, self.tile_size*self.CURRENTSELECTIONY, self.tile_size*self.CURRENTSELECTIONX + self.tile_size, self.tile_size*self.CURRENTSELECTIONY + self.tile_size, outline = "#00FF00", stipple="gray50")
-    
+        
 
     # ***********************************************************************************************
 
