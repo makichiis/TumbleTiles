@@ -949,7 +949,7 @@ class tumblegui:
         elif RECORDING:
             self.scriptmenu.entryconfigure(0, label='Record Script')
             filename = tkinter.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Plain Text", ".txt")])
-            if not file: return
+            if not filename: return
             file = open(filename, 'w+')
             file.write(SCRIPTSEQUENCE)
             file.close()
