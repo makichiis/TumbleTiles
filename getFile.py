@@ -8,13 +8,26 @@ import random
 import time
 import os,sys
 import tumbletiles as TT
+from enum import Enum 
 
-def getFile(type: str=None):
-    default_ext = type if type else '*'
-    return tkinter.filedialog.askopenfile(filetypes=[("All Files", "*"), ("eXtensible Markup Language", '.xml'), ("Plain Text", ".txt")], defaultextension=default_ext)    
-    ...
-    #default_ext = (type if (type != None) else '*')
-    #return tkinter.filedialog.askopenfilename(filetypes=[("eXtensible Markup Language", '.xml'), ("Plain Text", ".txt"), ("All Files", "*")], defaultextension=default_ext)
+
+class FileType(Enum):
+    ANY = ("All Files", '*')
+    TXT = ("Plain Text", ".txt")
+    XML = ("eXtensible Markup Language", '.xml')
+    GIF = ("Graphics Interchange Format", '.gif')
+
+
+def getFile(type: FileType=FileType.ANY):
+    filetypes = [FileType.ANY.value, FileType.TXT.value, FileType.XML.value, FileType.GIF.value]
+    defaultextension = FileType.ANY.value[1]
+    if type != FileType.ANY:
+        filetypes = [type.value]
+        defaultextension = type.value[1]
+
+    print(filetypes)
+    print(defaultextension)
+    return tkinter.filedialog.askopenfile(filetypes=filetypes, defaultextension=defaultextension)    
 
 #parse file will get the data from a file and now return both a board object and a preview tile object
 def parseFile(filename):

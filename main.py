@@ -22,7 +22,7 @@ import tumbleEdit as TE
 
 import tt2svg as TT2SVG
 
-from getFile import getFile, parseFile
+from getFile import getFile, parseFile, FileType
 from boardgui import redrawCanvas, drawGrid, redrawTumbleTiles, deleteTumbleTiles, drawPILImage
 import os
 import sys
@@ -977,7 +977,7 @@ class tumblegui:
     def loadScript(self):
         global LASTLOADEDSCRIPT
         if self.thread1.counter == 0:
-            filename = getFile('.txt')
+            filename = getFile(FileType.TXT)
             if not filename: return
             LASTLOADEDSCRIPT = filename
             file = open(filename, "r")
@@ -1490,7 +1490,7 @@ class tumblegui:
     # Opens the GUI file browser
     def loadFile(self):
         global LASTLOADEDFILE
-        filename = getFile()
+        filename = getFile(FileType.XML)
         LASTLOADEDFILE = filename
         self.loadTileSet(filename)
 
