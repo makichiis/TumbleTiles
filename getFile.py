@@ -27,7 +27,8 @@ def getFile(type: FileType=FileType.ANY):
 
     print(filetypes)
     print(defaultextension)
-    return tkinter.filedialog.askopenfile(filetypes=filetypes, defaultextension=defaultextension)    
+    return tkinter.filedialog.askopenfilename(filetypes=filetypes, defaultextension=defaultextension)    
+
 
 #parse file will get the data from a file and now return both a board object and a preview tile object
 def parseFile(filename):

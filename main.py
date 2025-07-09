@@ -499,6 +499,7 @@ class VideoExport:
         
     def openFileWindow(self):
         fileName = getFile()
+        print(fileName)
 
         self.fileName.set(fileName)
         # self.fileNameField.delete(0,END)
