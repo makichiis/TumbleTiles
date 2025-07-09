@@ -408,6 +408,7 @@ class Settings:
 
 class VideoExport:
     def __init__(self, parent, tumblegui):  # , fun):
+        # TODO: Fix-dynamicize padding. It's atrocious. 
         global TILESIZE
 
         self.tumbleGUI = tumblegui
@@ -420,7 +421,7 @@ class VideoExport:
         #self.wm_attributes("-disabled", True)
         self.t.wm_title("Video Export")
         # self.toplevel_dialog.transient(self)
-        self.t.geometry('360x250') 
+        self.t.geometry('360x280') 
 
 
         self.tileRes=StringVar()                # Variable for Tile Resolution
@@ -453,7 +454,7 @@ class VideoExport:
         self.fileNameField = Entry(self.t, textvariable=self.fileName)
         self.videoSpeedField = Entry(self.t, textvariable=self.videoSpeed, width=5)
         self.lineWidthField = Entry(self.t, textvariable=self.lineWidth, width=5)
-        self.exportFileNameField = Entry(self.t, textvariable=self.exportFileNameText, width=5)
+        # self.exportFileNameField = Entry(self.t, textvariable=self.exportFileNameText, width=5)
         
         
 
@@ -474,7 +475,8 @@ class VideoExport:
         self.fileNameField.place(x=fieldStartX,y=80, width=130)
 
         self.exportFileNameLabel.place(x=labelStartX, y=130)
-        self.exportFileNameField.place(x=fieldStartX,y=130, width=130)
+        self.exportFileNameLabel.config(wraplength=360-labelStartX)
+        # self.exportFileNameField.place(x=fieldStartX,y=130, width=130)
 
         self.videoSpeedLabel.place(x=labelStartX, y=60)
         self.videoSpeedField.place(x=fieldStartX, y=60)
@@ -483,23 +485,22 @@ class VideoExport:
         browseButton.place(x=fieldStartX, y=100, height=20)
 
 
-        self.exportLabel.place(x=labelStartX, y=155)
+        self.exportLabel.place(x=labelStartX, y=175)
         # Create a progres bar to show status of video export
 
         self.progress_var = DoubleVar() 
         self.progress=tkinter.ttk.Progressbar(self.t,orient=HORIZONTAL,variable=self.progress_var,length=260,mode='determinate')
-        self.progress.place(x=50, y=175)
+        self.progress.place(x=50, y=195)
         
         # Place export button    
 
         exportButton = Button(self.t, text="Export", command=self.export)
-        exportButton.place(x=150, y=210)
+        exportButton.place(x=150, y=230)
 
 
         
     def openFileWindow(self):
-        fileName = getFile()
-        print(fileName)
+        fileName = getFile(FileType.TXT)
 
         self.fileName.set(fileName)
         # self.fileNameField.delete(0,END)
@@ -549,27 +550,30 @@ class VideoExport:
         seqLen = len(sequence)  # total length used for progress bar
 
 
-        # If Videos folder does not exist, create it
-        if not os.path.exists("Videos"):
-            os.makedirs("Videos")
+        # # If Videos folder does not exist, create it
+        # if not os.path.exists("Videos"):
+        #     os.makedirs("Videos")
 
-        if self.exportFileNameText.get() == "": # If no file name was given create one
+        exportFile = tkinter.filedialog.asksaveasfilename(confirmoverwrite=True, defaultextension=".gif", filetypes=[("Graphics Interchange Format", ".gif")])
+        self.exportFileNameLabel.config(text=f"Output File Name: {exportFile}")
+
+        # if self.exportFileNameText.get() == "": # If no file name was given create one
         
-            x = 0
-            y = 0
-            z = 0
-            while os.path.exists("Videos/%s%s%s.gif" % (x, y, z)):
-                z = z + 1
-                if z == 10:
-                    z = 0
-                    y = y + 1
-                if y == 10:
-                    y = 0
-                    x = x + 1
+        #     x = 0
+        #     y = 0
+        #     z = 0
+        #     while os.path.exists("Videos/%s%s%s.gif" % (x, y, z)):
+        #         z = z + 1
+        #         if z == 10:
+        #             z = 0
+        #             y = y + 1
+        #         if y == 10:
+        #             y = 0
+        #             x = x + 1
 
-            exportFile = ("Videos/%s%s%s.gif" % (x, y, z))
-        else:
-            exportFile = "Videos/" + self.exportFileNameText.get() + ".gif"
+        #     exportFile = ("Videos/%s%s%s.gif" % (x, y, z))
+        # else:
+        #     exportFile = "Videos/" + self.exportFileNameText.get() + ".gif"
 
         for x in range(0, len(sequence)):   
 
