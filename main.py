@@ -254,7 +254,15 @@ class Settings:
         #self.wm_attributes("-disabled", True)
         self.t.wm_title("Board Options")
         # self.toplevel_dialog.transient(self)
-        self.t.geometry('180x180')  # wxh
+        # self.t.geometry('180x180')  # wxh
+        self.parent.update_idletasks()
+        parentX = self.parent.winfo_x()
+        parentY = self.parent.winfo_y()
+        parentW = self.parent.winfo_width()
+        parentH = self.parent.winfo_height()
+        x = parentX + (parentW // 2) - (180 // 2)
+        y = parentY + (parentH // 2) - (180 // 2)
+        self.t.geometry(f'180x180+{x}+{y}')
 
         self.tkTILESIZE = StringVar()
         self.tkTILESIZE.set(str(TILESIZE))

@@ -1247,7 +1247,7 @@ Shift + Right-Click:
         global COPIED_SELECTION
         global COPIED_SELECTION_COORDS
         COPIED_SELECTION_COORDS = ICoordPair2D(self.SELECTIONX1, self.SELECTIONY1, self.SELECTIONX2, self.SELECTIONY2)
-      
+        # TODO: Clean up clipboarding code. It is messy because a hotfix was requested. 
         COPYMADE = True
 
         COPIED_SELECTION = [[None for x in range(abs(self.SELECTIONY2 - self.SELECTIONY1) + 1)] for y in range(abs(self.SELECTIONX2 - self.SELECTIONX1) + 1)]
