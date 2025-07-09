@@ -9,8 +9,12 @@ import time
 import os,sys
 import tumbletiles as TT
 
-def getFile():
-    return tkinter.filedialog.askopenfilename(filetypes=[("eXtensible Markup Language", '.xml')], defaultextension=".xml")
+def getFile(type: str=None):
+    default_ext = type if type else '*'
+    return tkinter.filedialog.askopenfile(filetypes=[("All Files", "*"), ("eXtensible Markup Language", '.xml'), ("Plain Text", ".txt")], defaultextension=default_ext)    
+    ...
+    #default_ext = (type if (type != None) else '*')
+    #return tkinter.filedialog.askopenfilename(filetypes=[("eXtensible Markup Language", '.xml'), ("Plain Text", ".txt"), ("All Files", "*")], defaultextension=default_ext)
 
 #parse file will get the data from a file and now return both a board object and a preview tile object
 def parseFile(filename):

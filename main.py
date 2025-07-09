@@ -977,7 +977,7 @@ class tumblegui:
     def loadScript(self):
         global LASTLOADEDSCRIPT
         if self.thread1.counter == 0:
-            filename = getFile()
+            filename = getFile('.txt')
             if not filename: return
             LASTLOADEDSCRIPT = filename
             file = open(filename, "r")
