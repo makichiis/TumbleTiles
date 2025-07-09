@@ -10,7 +10,7 @@ import os,sys
 import tumbletiles as TT
 
 def getFile():
-    return tkinter.filedialog.askopenfilename()
+    return tkinter.filedialog.askopenfilename(filetypes=[("eXtensible Markup Language", '.xml')], defaultextension=".xml")
 
 #parse file will get the data from a file and now return both a board object and a preview tile object
 def parseFile(filename):
