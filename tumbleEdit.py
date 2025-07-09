@@ -18,6 +18,7 @@ import sys
 import math
 from tkinter.colorchooser import askcolor
 import numpy as np
+from dataclasses import dataclass
 
 # the x and y coordinate that the preview tiles will begin to be drawn on
 
@@ -35,12 +36,21 @@ CURRENTNEWTILECOLOR = '#ffff00'
 # Used to know where to paste a selection that was made
 CURRENTSELECTION = 0
 
-
 # Defines the current state of selecting an area
 SELECTIONSTARTED = False
 SELECTIONMADE = False
 COPYMADE = False
 SHIFTSELECTIONSTARTED = False
+
+@dataclass
+class ICoordPair2D:
+    x1: int = 0
+    y1: int = 0
+    x2: int = 0
+    y2: int = 0
+
+COPIED_SELECTION = []
+COPIED_SELECTION_COORDS = ICoordPair2D(0, 0, 0, 0)
 
 MODS = {
     0x0001: 'Shift',
@@ -53,7 +63,6 @@ MODS = {
     0x0200: 'Mouse button 2',
     0x0400: 'Mouse button 3'
 }
-
 
 
 class TileEditorGUI:
@@ -312,8 +321,6 @@ Shift + Right-Click:
         self.squareSelection = self.BoardCanvas.create_rectangle(
             0, 0, 0, 0, fill="#0000FF", stipple="gray50")
 
-        # Contains the data of a copied region
-        self.copiedSelection = []
         self.ShiftSelectionMatrix = [[None for y in range(
         self.board.Rows)] for x in range(self.board.Cols)]
 
@@ -848,14 +855,14 @@ Shift + Right-Click:
 
 
         if sys.platform == 'darwin':  # value for OSX
-                rightClick = 2
+            rightClick = 2
 
         # print(event.num)
         # print " mods : ", MODS.get(event.state, None)
         # Determine the position on the board the player clicked
 
-        x = (event.x / self.tile_size)
-        y = (event.y / self.tile_size)
+        # x = (event.x / self.tile_size)
+        # y = (event.y / self.tile_size)
 
         x = int(self.BoardCanvas.canvasx(event.x)) // self.tile_size
         y = int(self.BoardCanvas.canvasy(event.y)) // self.tile_size
@@ -902,7 +909,7 @@ Shift + Right-Click:
 
             # print(self.add_state)
             if self.add_state:
-                    self.addTileAtPos(x, y)
+                self.addTileAtPos(x, y)
 
         elif event.keysym == "r" and MODS.get(event.state, None) == 'Control':
             self.reloadFile()
@@ -1172,6 +1179,7 @@ Shift + Right-Click:
         
     # This method will outline a square that is clicked on with a red line
     def selected(self, i):
+        print("called")
         if self.selectedTileIndex == i:
             if not self.prevTileList[self.selectedTileIndex].isConcrete:
                self.editTilePrevTile()
@@ -1233,13 +1241,16 @@ Shift + Right-Click:
 
         # WIll store a copy of all the tiles in a seleciton so that it can be pasted
 
+    # TODO: Cross-Editor Clipboard
     def copySelection(self):
         global COPYMADE
-
+        global COPIED_SELECTION
+        global COPIED_SELECTION_COORDS
+        COPIED_SELECTION_COORDS = ICoordPair2D(self.SELECTIONX1, self.SELECTIONY1, self.SELECTIONX2, self.SELECTIONY2)
       
         COPYMADE = True
 
-        self.copiedSelection = [[None for x in range(abs(self.SELECTIONY2 - self.SELECTIONY1) + 1)] for y in range(abs(self.SELECTIONX2 - self.SELECTIONX1) + 1)]
+        COPIED_SELECTION = [[None for x in range(abs(self.SELECTIONY2 - self.SELECTIONY1) + 1)] for y in range(abs(self.SELECTIONX2 - self.SELECTIONX1) + 1)]
 
         for x in range(self.SELECTIONX1, self.SELECTIONX2 + 1):
             # print "X index: ", x
@@ -1248,10 +1259,10 @@ Shift + Right-Click:
                 # print "Copying tile at ", x, ", ", y, " to ", x - self.SELECTIONX1, ", ", y - self.SELECTIONY1
 
                 try:
-                    self.copiedSelection[x - self.SELECTIONX1][y - self.SELECTIONY1] = copy.deepcopy(self.board.coordToTile[x][y])
+                    COPIED_SELECTION[x - self.SELECTIONX1][y - self.SELECTIONY1] = copy.deepcopy(self.board.coordToTile[x][y])
                 except IndexError:
-                    print("Error: tried to access self.copiedSelection[", x - self.SELECTIONX1, "][", y - self.SELECTIONY1, "]")
-                    print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
+                    print("Error: tried to access COPIED_SELECTION[", x - self.SELECTIONX1, "][", y - self.SELECTIONY1, "]")
+                    print("Its size is ", len(COPIED_SELECTION), ", ", len(COPIED_SELECTION[0]))
 
                     print("Error: tried to access self.board.coordToTile[", x, "][", y, "]")
                     print("Its size is ", len(self.board.coordToTile[x]), ", ", len(self.board.coordToTile[x]))
@@ -1259,6 +1270,7 @@ Shift + Right-Click:
 
     def selectionVerticallyFlipped(self):
         global CURRENTNEWTILECOLOR
+        global COPIED_SELECTION
         color = CURRENTNEWTILECOLOR
         
         self.copySelection()
@@ -1292,14 +1304,14 @@ Shift + Right-Click:
             for y in range(0, selectionHeight):
 
                 try:    
-                    if(self.copiedSelection[x][y] == None):
+                    if(COPIED_SELECTION[x][y] == None):
                         continue
                     else:
-                        tile = self.copiedSelection[x][y]
+                        tile = COPIED_SELECTION[x][y]
 
                 except IndexError:
-                    print("Error: tried to access self.copiedSelection[", x, "][", y, "]")
-                    print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
+                    print("Error: tried to access COPIED_SELECTION[", x, "][", y, "]")
+                    print("Its size is ", len(COPIED_SELECTION), ", ", len(COPIED_SELECTION[0]))
 
                 # print "x: ",x
                 # print "y: ", y
@@ -1331,19 +1343,20 @@ Shift + Right-Click:
             
                 newConcTile = TT.Tile(None, 0, newX, newY, glues , color , True)
 
-                # self.copiedSelection[x][y].x = newX
-                # self.copiedSelection[x][y].y = newY
+                # COPIED_SELECTION[x][y].x = newX
+                # COPIED_SELECTION[x][y].y = newY
 
-                if self.copiedSelection[x][y].isConcrete:
+                if COPIED_SELECTION[x][y].isConcrete:
                     # print "is concrete"
                     self.board.AddConc(newConcTile)
-                elif not self.copiedSelection[x][y].isConcrete:
+                elif not COPIED_SELECTION[x][y].isConcrete:
                     self.board.Add(p)
         self.redrawPrev()
         self.board.remapArray()
             
     def selectionHorizontallyFlipped(self):
             global CURRENTNEWTILECOLOR
+            global COPIED_SELECTION
             color = CURRENTNEWTILECOLOR
             self.copySelection()
 
@@ -1376,14 +1389,14 @@ Shift + Right-Click:
                 for y in range(0, selectionHeight):
 
                     try:    
-                        if(self.copiedSelection[x][y] == None):
+                        if(COPIED_SELECTION[x][y] == None):
                             continue
                         else:
-                            tile = self.copiedSelection[x][y]
+                            tile = COPIED_SELECTION[x][y]
 
                     except IndexError:
-                        print("Error: tried to access self.copiedSelection[", x, "][", y, "]")
-                        print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
+                        print("Error: tried to access COPIED_SELECTION[", x, "][", y, "]")
+                        print("Its size is ", len(COPIED_SELECTION), ", ", len(COPIED_SELECTION[0]))
 
                     # print "x: ",x
                     # print "y: ", y
@@ -1413,13 +1426,13 @@ Shift + Right-Click:
                 
                     newConcTile = TT.Tile(None, 0, newX, newY, glues , color , True)
 
-                    # self.copiedSelection[x][y].x = newX
-                    # self.copiedSelection[x][y].y = newY
+                    # COPIED_SELECTION[x][y].x = newX
+                    # COPIED_SELECTION[x][y].y = newY
 
-                    if self.copiedSelection[x][y].isConcrete:
+                    if COPIED_SELECTION[x][y].isConcrete:
                         # print "is concrete"
                         self.board.AddConc(newConcTile)
-                    elif not self.copiedSelection[x][y].isConcrete:
+                    elif not COPIED_SELECTION[x][y].isConcrete:
                         self.board.Add(p)
 
             self.redrawPrev()
@@ -1485,6 +1498,12 @@ Shift + Right-Click:
         
 
         global COPYMADE
+        global COPIED_SELECTION
+        global COPIED_SELECTION_COORDS
+        self.SELECTIONX1 = COPIED_SELECTION_COORDS.x1 
+        self.SELECTIONX2 = COPIED_SELECTION_COORDS.x2 
+        self.SELECTIONY1 = COPIED_SELECTION_COORDS.y1 
+        self.SELECTIONY2 = COPIED_SELECTION_COORDS.y2 
 
         if not COPYMADE:
             print("Nothing to paste")
@@ -1509,14 +1528,14 @@ Shift + Right-Click:
                 for y in range(0, selectionHeight):
 
                     try:    
-                        if(self.copiedSelection[x][y] == None):
+                        if(COPIED_SELECTION[x][y] == None):
                             continue
                         else:
-                            tile = self.copiedSelection[x][y]
+                            tile = COPIED_SELECTION[x][y]
 
                     except IndexError:
-                        print("Error: tried to access self.copiedSelection[", x, "][", y, "]")
-                        print("Its size is ", len(self.copiedSelection), ", ", len(self.copiedSelection[0]))
+                        print("Error: tried to access COPIED_SELECTION[", x, "][", y, "]")
+                        print("Its size is ", len(COPIED_SELECTION), ", ", len(COPIED_SELECTION[0]))
 
                     # print "x: ",x
                     # print "y: ", y
@@ -1548,13 +1567,13 @@ Shift + Right-Click:
                     newConcTile = TT.Tile(None, 0, newX, newY, glues , color , True)
 
 
-                    # self.copiedSelection[x][y].x = newX
-                    # self.copiedSelection[x][y].y = newY
+                    # COPIED_SELECTION[x][y].x = newX
+                    # COPIED_SELECTION[x][y].y = newY
 
-                    if self.copiedSelection[x][y].isConcrete:
+                    if COPIED_SELECTION[x][y].isConcrete:
                         # print "is concrete"
                         self.board.AddConc(newConcTile)
-                    elif not self.copiedSelection[x][y].isConcrete:
+                    elif not COPIED_SELECTION[x][y].isConcrete:
                         self.board.Add(p)
 
 
@@ -1566,7 +1585,8 @@ Shift + Right-Click:
 
 
     def DisplaySelection(self):
-        print((self.copiedSelection))
+        global COPIED_SELECTION
+        print((COPIED_SELECTION))
 
     def drawSquareSelectionYellow(self):
         self.BoardCanvas.delete(self.squareSelection)
