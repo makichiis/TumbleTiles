@@ -134,7 +134,7 @@ class TileEditorGUI:
         #   Window Config
         # /////////////////
         self.newWindow = Toplevel(self.parent)
-        self.newWindow.wm_title("Editor")
+        self.newWindow.wm_title(f"Editor - {self.parent.title()}")
         self.newWindow.resizable(True, True)
         self.newWindow.protocol("WM_DELETE_WINDOW", lambda: self.closeGUI())
 
@@ -912,7 +912,7 @@ Shift + Right-Click:
                 self.addTileAtPos(x, y)
 
         elif event.keysym == "r" and MODS.get(event.state, None) == 'Control':
-            self.reloadFile()
+            self.reloadFile() # TODO: No definition for self.reloadFile
 
     # Handles most key press events
 
@@ -1827,7 +1827,10 @@ Shift + Right-Click:
 
     def saveTileConfig(self):
         filename = tkinter.filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("eXtensible Markup Language", ".xml")])
-        if not filename: return
+        if not filename: 
+            return
+        
+
         tile_config = ET.Element("TileConfiguration")
         board_size = ET.SubElement(tile_config, "BoardSize")
         glue_func = ET.SubElement(tile_config, "GlueFunction")
@@ -1973,6 +1976,9 @@ Shift + Right-Click:
 
         file = open(filename, "wb")
         file.write(mydata)
+
+        self.newWindow.master.title(f"{filename.split('/')[-1]}")
+        self.newWindow.title(f"Editor - {self.parent.title()}")
 
 
 

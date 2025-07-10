@@ -1498,6 +1498,7 @@ class tumblegui:
         filename = getFile(FileType.XML)
         LASTLOADEDFILE = filename
         self.loadTileSet(filename)
+        # TODO: Replace hardcoded / with os file separator. Issue is at the getFile() level.
 
     # Will reload the last loaded file to enable quick testing
     def reloadFile(self):
@@ -1543,6 +1544,8 @@ class tumblegui:
         self.listOfCommands = data[3]
         self.popWinSequences()
         self.callCanvasRedraw()
+
+        self.root.title(LASTLOADEDFILE.split('/')[-1])
 
     def callCanvasRedraw(self):
         global TILESIZE
@@ -1893,6 +1896,7 @@ class tumblegui:
     def newBoard(self):
         del self.board.Polyominoes[:]
         self.board.LookUp = {}
+        self.root.title("New Board")
 
         self.board = TT.Board(TT.BOARDHEIGHT, TT.BOARDWIDTH)
         bh = TT.BOARDHEIGHT
