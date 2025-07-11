@@ -205,6 +205,8 @@ class TileEditorGUI:
         command=self.addNewPrevTile)
         self.addNewPrevTileButton.pack(side=TOP)
 
+        self.addTileWindow = None # null default init for instance check 
+
         self.controlsInstructionFrame = Frame(
         self.tileEditorFrame,
         width=20,
@@ -392,6 +394,7 @@ Shift + Right-Click:
     def addNewPrevTile(self):
         global CURRENTNEWTILECOLOR
 
+        if self.addTileWindow: return 
         self.addTileWindow = Toplevel(self.newWindow)
         self.addTileWindow.lift(aboveThis=self.newWindow)
 
@@ -1989,6 +1992,7 @@ Shift + Right-Click:
 
     def closeNewTileWindow(self):
         self.addTileWindow.destroy()
+        self.addTileWindow = None 
 
 
     class WindowResizeDialogue:
