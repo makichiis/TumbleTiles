@@ -22,6 +22,11 @@ from dataclasses import dataclass
 
 # the x and y coordinate that the preview tiles will begin to be drawn on
 
+def debug_print(*print_args):
+    if TT.DEBUGGING:
+        for arg in print_args:
+            print(f"[DEBUG]: {arg}\n") 
+
 TILESIZE = 15
 
 PREVTILESTARTX = 20
@@ -138,6 +143,7 @@ class TileEditorGUI:
         self.newWindow.resizable(True, True)
         self.newWindow.protocol("WM_DELETE_WINDOW", lambda: self.closeGUI())
 
+        # TODO: Refactor binds to modular callbacks instead of a central "double-event-handler". This is a weird pattern.
         self.newWindow.bind("<Key>", self.keyPressed)
         self.newWindow.bind("<Up>", self.keyPressed)
         self.newWindow.bind("<Right>", self.keyPressed)
@@ -705,7 +711,7 @@ Shift + Right-Click:
         r = lambda: random.randint(100, 255)
 
         newPrevTile = {}
-        # print(newPrevTile)
+        # debug_print(newPrevTile)
 
         color = CURRENTNEWTILECOLOR
         northGlue = self.newTileN.get()
@@ -714,7 +720,7 @@ Shift + Right-Click:
         westGlue = self.newTileW.get()
         label = "x"
         if self.concreteChecked.get() == 1:
-            # print("adding concrete")
+            # debug_print("adding concrete")
             isConcrete = "True"
             color = "#686868"
         else:
@@ -752,13 +758,13 @@ Shift + Right-Click:
     # also changes the relief of the button to show whether or not it is
     # currently selected
     def randomColorToggle(self):
-        # print(self.randomizeColor)
+        # debug_print(self.randomizeColor)
         if self.randomizeColor == True:
-            # print("raising")
+            # debug_print("raising")
             self.randomColorButton.config(relief=RAISED)
             self.randomizeColor = False
         else:
-            # print("sinking")
+            # debug_print("sinking")
             self.randomColorButton.config(relief=SUNKEN)
             self.randomizeColor = True
 
@@ -937,29 +943,29 @@ Shift + Right-Click:
             
 
             if event.keysym == "Up":
-                print("Moving up")
+                debug_print("Moving up")
                 self.stepAllTiles("N")
             elif event.keysym == "Right":
-                print("Moving Right")
+                debug_print("Moving Right")
                 self.stepAllTiles("E")
             elif event.keysym == "Down":
-                print("Moving Down")
+                debug_print("Moving Down")
                 self.stepAllTiles("S")
             elif event.keysym == "Left":
-                print("Mving Left")
+                debug_print("Moving Left")
                 self.stepAllTiles("W")
         elif SELECTIONMADE:
             if event.keysym == "Up":
-                print("Moving up")
+                debug_print("Moving up")
                 self.stepSelection("N")
             elif event.keysym == "Right":
-                print("Moving Right")
+                debug_print("Moving Right")
                 self.stepSelection("E")
             elif event.keysym == "Down":
-                print("Moving Down")
+                debug_print("Moving Down")
                 self.stepSelection("S")
             elif event.keysym == "Left":
-                print("Mving Left")
+                debug_print("Mving Left")
                 self.stepSelection("W")
         if event.state / 4 % 2 == 1:
             if event.keysym.lower() == "f" and SHIFTSELECTIONSTARTED:
@@ -1279,6 +1285,7 @@ Shift + Right-Click:
                 try:
                     COPIED_SELECTION[x - self.SELECTIONX1][y - self.SELECTIONY1] = copy.deepcopy(self.board.coordToTile[x][y])
                 except IndexError:
+                    # TODO: Replace this and others with error logging. 
                     print("Error: tried to access COPIED_SELECTION[", x - self.SELECTIONX1, "][", y - self.SELECTIONY1, "]")
                     print("Its size is ", len(COPIED_SELECTION), ", ", len(COPIED_SELECTION[0]))
 
@@ -1524,13 +1531,13 @@ Shift + Right-Click:
         self.SELECTIONY2 = COPIED_SELECTION_COORDS.y2 
 
         if not COPYMADE:
-            print("Nothing to paste")
+            debug_print("Nothing to paste")
 
         else:
 
             for x in range(0, self.SELECTIONX2 - self.SELECTIONX1):
                 for y in range(0, self.SELECTIONY2 - self.SELECTIONY1):
-                    print("Removing tile at ", x + self.CURRENTSELECTIONX, ", ", y + self.CURRENTSELECTIONY)
+                    debug_print("Removing tile at ", x + self.CURRENTSELECTIONX, ", ", y + self.CURRENTSELECTIONY)
                     self.removeTileAtPos(self.CURRENTSELECTIONX + x,self.CURRENTSELECTIONY + y, False)
                     
 
@@ -1604,7 +1611,7 @@ Shift + Right-Click:
 
     def DisplaySelection(self):
         global COPIED_SELECTION
-        print((COPIED_SELECTION))
+        debug_print(COPIED_SELECTION)
 
     def drawSquareSelectionYellow(self):
         self.BoardCanvas.delete(self.squareSelection)
@@ -1700,12 +1707,12 @@ Shift + Right-Click:
         for p in self.board.Polyominoes:
             for tile in p.Tiles:
                 if self.board.coordToTile[tile.x][tile.y] != tile:
-                    print("ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n", end=' ')
+                    debug_print("ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n", end=' ')
                     verified = False
 
         for tile in self.board.ConcreteTiles:
             if self.board.coordToTile[tile.x][tile.y] != tile:
-                print("ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n", end=' ')
+                debug_print("ERROR: Tile at ", tile.x, ", ", tile.y, " is not in array properly \n", end=' ')
                 verified = False
 
         # if verified:
@@ -1718,17 +1725,34 @@ Shift + Right-Click:
 
 
     def stepAllTiles(self, direction):
-        print("STEPPING", direction) 
+        debug_print("STEPPING", direction) 
         dx = 0
         dy = 0
 
+        crosses_edge_north = False  
+        crosses_edge_south = False 
+        crosses_edge_west  = False 
+        crosses_edge_east  = False 
+
+        for y in range(self.board.Cols):
+            if self.board.coordToTile[0][y] is not None: crosses_edge_west = True 
+            if self.board.coordToTile[-1][y] is not None: crosses_edge_east = True 
+
+        for x in range(self.board.Rows):
+            if self.board.coordToTile[x][0] is not None: crosses_edge_north = True 
+            if self.board.coordToTile[x][-1] is not None: crosses_edge_south = True 
+
         if direction == "N":
+            if crosses_edge_north: return 
             dy = -1
         elif direction == "S":
+            if crosses_edge_south: return 
             dy = 1
         elif direction == "E":
+            if crosses_edge_east: return 
             dx = 1
         elif direction == "W":
+            if crosses_edge_west: return 
             dx = -1
 
         for p in self.board.Polyominoes:
@@ -1984,7 +2008,7 @@ Shift + Right-Click:
                     command = ET.SubElement(commands, "Command")
                     command.set("name", str(c[0]))
                     command.set("filename", str(c[1]))
-                    print("Name: ", c[0],", Filename: ", c[1])
+                    debug_print("Name: ", c[0],", Filename: ", c[1])
                         
         # print tile_config
         mydata = ET.tostring(tile_config)
