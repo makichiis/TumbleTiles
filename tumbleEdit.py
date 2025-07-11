@@ -326,14 +326,15 @@ Shift + Right-Click:
         self.ShiftSelectionMatrix = [[None for y in range(
         self.board.Rows)] for x in range(self.board.Cols)]
 
-        self.TilesFrame = Frame(
+        # TODO: Deselect
+        self.tilesFrame = Frame(
         self.tileEditorFrame,
         width=200,
         height=200,
         relief=SUNKEN,
         borderwidth=1)
         self.tilePrevCanvas = Canvas(
-        self.TilesFrame,
+        self.tilesFrame,
         width=200,
         height=300,
         scrollregion=(
@@ -342,27 +343,28 @@ Shift + Right-Click:
             200,
              2000))
         
+        
         self.location_text = Label(
             self.tileEditorFrame,
             text="(0, 0)",
         )
         self.location_text.pack()
 
-        self.scrollbarCanvasV = Scrollbar(self.TilesFrame)
+        self.scrollbarCanvasV = Scrollbar(self.tilesFrame)
         self.scrollbarCanvasV.pack(side=RIGHT, fill=Y)
         self.tilePrevCanvas.config(
         yscrollcommand=self.scrollbarCanvasV.set)
         self.scrollbarCanvasV.config(command=self.tilePrevCanvas.yview)
 
         self.scrollbarCanvasH = Scrollbar(
-            self.TilesFrame, orient=HORIZONTAL)
+            self.tilesFrame, orient=HORIZONTAL)
         self.scrollbarCanvasH.pack(side=BOTTOM, fill=X)
         self.tilePrevCanvas.config(
         xscrollcommand=self.scrollbarCanvasH.set)
         self.scrollbarCanvasH.config(command=self.tilePrevCanvas.xview)
 
         self.tilePrevCanvas.pack()
-        self.TilesFrame.pack(side=TOP)
+        self.tilesFrame.pack(side=TOP)
         self.tilePrevCanvas.pack()
 
         # draw the board on the canvas os
@@ -534,6 +536,9 @@ Shift + Right-Click:
         global CURRENTNEWTILECOLOR
         i = self.selectedTileIndex
         tile = self.prevTileList[i]
+
+        if self.addTileWindow is not None:
+            return 
 
         self.addTileWindow = Toplevel(self.newWindow)
         self.addTileWindow.lift(aboveThis=self.newWindow)
@@ -785,6 +790,8 @@ Shift + Right-Click:
              a=i: self.selected(a))
             # buttonArray.append(prevTileButton)
 
+            self.tilePrevCanvas.bind('<Button-1>', lambda event: self.deselect_if_empty(event))
+
             if prevTile.isConcrete == False:
                 # Print Glues
                 if prevTile.glues[0] != "None":
@@ -832,12 +839,12 @@ Shift + Right-Click:
             frame_size = y + size + 10
 
                 # frame_size = (PREVTILESIZE)*len(self.prevTileList) + 20
-        self.TilesFrame.config(width=100, height=500)
+        self.tilesFrame.config(width=100, height=500)
         self.tilePrevCanvas.config(
         width=100, height=frame_size, scrollregion=(
         0, 0, 200, frame_size))
 
-        self.TilesFrame.pack(side=TOP)
+        self.tilesFrame.pack(side=TOP)
         self.tilePrevCanvas.pack()
 
     # ***********************************************************************************************
@@ -1182,11 +1189,10 @@ Shift + Right-Click:
         
     # This method will outline a square that is clicked on with a red line
     def selected(self, i):
-        print("called")
         if self.selectedTileIndex == i:
             if not self.prevTileList[self.selectedTileIndex].isConcrete:
                self.editTilePrevTile()
-        else:
+        else: # TODO: activate edit window via double-click instead of single click 
             self.add_state = True
             self.selectedTileIndex = i
     
@@ -1196,7 +1202,16 @@ Shift + Right-Click:
             self.outline = self.tilePrevCanvas.create_rectangle(PREVTILESTARTX, PREVTILESTARTY + 80 * i, 
                 PREVTILESTARTX + PREVTILESIZE, PREVTILESTARTY + 80 * i + PREVTILESIZE, outline="#FF0000", width = 2)
 
-        
+    def deselect_if_empty(self, event: Event):
+        if self.selectedTileIndex == -1: return 
+
+        if not event.widget.find_overlapping(event.x, event.y, event.x, event.y):
+            self.tilePrevCanvas.delete(self.outline)
+            self.outline = None 
+
+            self.selectedTileIndex = -1 
+            self.add_state = False 
+            
 
     def deleteTilesInShiftSelection(self):
         for x in range(0, self.board.Cols):
