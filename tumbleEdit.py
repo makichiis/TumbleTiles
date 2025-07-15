@@ -2037,8 +2037,9 @@ Shift + Right-Click:
         self.addTileWindow = None 
 
     def clampBoard(self):
-        bounding_box = self.getBoundingBox()
-        min_x, min_y, max_x, max_y = bounding_box
+        """Clamps the board to the bounding box of the simulation."""
+
+        min_x, min_y, max_x, max_y = self.getBoundingBox()
 
         self.stepAllTiles("W", False, min_x)
         self.stepAllTiles("N", False, min_y)
@@ -2049,6 +2050,13 @@ Shift + Right-Click:
         self.resizeBoard(clamp_x, clamp_y)
 
     def getBoundingBox(self) -> tuple[int, int, int, int]: # Should we use a dataclass instead?
+        """
+        Gets the bounding box `(x0, y0, x1, y1)` of the board.
+
+        Returns:
+            `tuple[int,int,int,int]`:The bounding box. Might replace with dataclass. 
+        """
+        
         min_x = self.board_w 
         max_x = 0
         min_y = self.board_h
