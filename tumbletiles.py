@@ -202,7 +202,7 @@ class Board:
         self.Cols = C
         self.Board = [[' ' for x in range(self.Cols)] for y in range(self.Rows)] #[[' ']*self.Cols]*self.Rows
         #list of polyominoes
-        self.Polyominoes = []
+        self.Polyominoes: list[Polyomino] = []
         self.ConcreteTiles = []
         self.ConcreteColor = "#686868"
         #get the index of a polyomino based on symbol

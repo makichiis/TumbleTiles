@@ -19,6 +19,7 @@ import math
 from tkinter.colorchooser import askcolor
 import numpy as np
 from dataclasses import dataclass
+from typing import SupportsInt
 
 # the x and y coordinate that the preview tiles will begin to be drawn on
 
@@ -169,6 +170,8 @@ class TileEditorGUI:
         optionsMenu.add_command(
         label="Save Configuration",
          command=lambda: self.saveTileConfig())
+
+        optionsMenu.add_command(label="Strip to Construction", command=lambda: self.clampBoard())
 
         # add the options menu to the menu bar
         self.menuBar.add_cascade(label="Option", menu=optionsMenu)
@@ -944,7 +947,7 @@ Shift + Right-Click:
 
             if event.keysym == "Up":
                 debug_print("Moving up")
-                self.stepAllTiles("N")
+                self.stepAllTiles("N") # TODO: Replace with enum class arguments
             elif event.keysym == "Right":
                 debug_print("Moving Right")
                 self.stepAllTiles("E")
@@ -1724,7 +1727,7 @@ Shift + Right-Click:
 
 
 
-    def stepAllTiles(self, direction):
+    def stepAllTiles(self, direction, update=True, steps=1):
         debug_print("STEPPING", direction) 
         dx = 0
         dy = 0
@@ -1734,26 +1737,26 @@ Shift + Right-Click:
         crosses_edge_west  = False 
         crosses_edge_east  = False 
 
-        for y in range(self.board.Cols):
+        for y in range(self.board.Rows): # TODO: Scale dynamically to value of steps parameter  
             if self.board.coordToTile[0][y] is not None: crosses_edge_west = True 
             if self.board.coordToTile[-1][y] is not None: crosses_edge_east = True 
 
-        for x in range(self.board.Rows):
+        for x in range(self.board.Cols): # TODO: Scale dynamically to value of steps parameter 
             if self.board.coordToTile[x][0] is not None: crosses_edge_north = True 
             if self.board.coordToTile[x][-1] is not None: crosses_edge_south = True 
 
         if direction == "N":
             if crosses_edge_north: return 
-            dy = -1
+            dy = -1 * steps 
         elif direction == "S":
             if crosses_edge_south: return 
-            dy = 1
+            dy = 1 * steps 
         elif direction == "E":
             if crosses_edge_east: return 
-            dx = 1
+            dx = 1 * steps 
         elif direction == "W":
             if crosses_edge_west: return 
-            dx = -1
+            dx = -1 * steps 
 
         for p in self.board.Polyominoes:
             for tile in p.Tiles:
@@ -1770,7 +1773,7 @@ Shift + Right-Click:
             if tile.y + dy >= 0 and tile.y + dy < self.board.Rows:          
                 tile.y = tile.y + dy
 
-        self.redrawPrev()
+        if update: self.redrawPrev()
         self.board.remapArray()
 
 
@@ -2032,6 +2035,34 @@ Shift + Right-Click:
     def closeNewTileWindow(self):
         self.addTileWindow.destroy()
         self.addTileWindow = None 
+
+    def clampBoard(self):
+        bounding_box = self.getBoundingBox()
+        min_x, min_y, max_x, max_y = bounding_box
+
+        self.stepAllTiles("W", False, min_x)
+        self.stepAllTiles("N", False, min_y)
+
+        clamp_x = max_x - min_x + 1
+        clamp_y = max_y - min_y + 1
+
+        self.resizeBoard(clamp_x, clamp_y)
+
+    def getBoundingBox(self) -> tuple[int, int, int, int]: # Should we use a dataclass instead?
+        min_x = self.board_w 
+        max_x = 0
+        min_y = self.board_h
+        max_y = 0 
+
+        for x in range(self.board.Rows):
+            for y in range(self.board.Cols):
+                if self.board.coordToTile[x][y] is not None:
+                    min_x = min(min_x, x) 
+                    max_x = max(max_x, x)
+                    min_y = min(min_y, y)
+                    max_y = max(max_y, y)
+
+        return (min_x, min_y, max_x, max_y)
 
 
     class WindowResizeDialogue:
