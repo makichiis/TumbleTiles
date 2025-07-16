@@ -434,9 +434,9 @@ class VideoExport:
 
         # Set default amounts
 
-        self.tileRes.set("100")
-        self.videoSpeed.set("3")
-        self.lineWidth.set("10")
+        self.tileRes.set("10")
+        self.videoSpeed.set("4")
+        self.lineWidth.set("1")
 
 
         # Initiate all Label objects
@@ -575,6 +575,7 @@ class VideoExport:
         # else:
         #     exportFile = "Videos/" + self.exportFileNameText.get() + ".gif"
 
+        # TODO: Replace with stream instead of caching all images before encoding stage 
         for x in range(0, len(sequence)):   
 
 
@@ -596,7 +597,7 @@ class VideoExport:
         images[0].save(exportFile, save_all=True, append_images=images[1:], duration=framesPerSec, loop=1)
 
         # Set the export Text
-        self.exportText.set("Video saved at "+exportFile)
+        self.exportText.set("Video saved at " + exportFile)
 
         # Update the progress bar and update the toplevel to redraw the progress bar
 

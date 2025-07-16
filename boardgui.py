@@ -57,9 +57,9 @@ def drawPILImage(board, boardwidth, boardheight, canvas, tilesize, textcolor = "
     return im
 
 
-def PILDrawTile(imageDraw, x, y, tileSize, color, lineWidth):
-    imageDraw.rectangle((x * tileSize - lineWidth / 2, y * tileSize - lineWidth / 2, x * tileSize + tileSize + lineWidth / 2, y * tileSize  + tileSize + lineWidth /2), fill =0, outline=0)
-    imageDraw.rectangle((x * tileSize + lineWidth / 2, y * tileSize + lineWidth / 2, x * tileSize + tileSize - lineWidth / 2, y * tileSize + tileSize- lineWidth / 2 ), fill =color, outline=0)
+def PILDrawTile(image, x, y, tileSize, color, lineWidth):
+    image.rectangle((x * tileSize - lineWidth / 2, y * tileSize - lineWidth / 2, x * tileSize + tileSize + lineWidth / 2, y * tileSize  + tileSize + lineWidth /2), fill =0, outline=0)
+    image.rectangle((x * tileSize + lineWidth / 2, y * tileSize + lineWidth / 2, x * tileSize + tileSize - lineWidth / 2, y * tileSize + tileSize- lineWidth / 2 ), fill =color, outline=0)
 
 
 
