@@ -1854,8 +1854,9 @@ Shift + Right-Click:
     # ***********************************************************************************************
 
 
-
+    # this is NOT file IO bro 
     def newBoard(self):
+        """Creates a new board and deletes the old board from memory."""
         del self.board.Polyominoes[:]
         self.board.LookUp = {}
 
@@ -1866,11 +1867,13 @@ Shift + Right-Click:
         self.redrawPrev()
 
     def exportTiles(self):
+        """I have no idea what this does beyond the name of the function."""
         # print("new cols : ", self.board.Cols, "new rows : ", self.board.Rows)
 
         self.tumbleGUI.setTilesFromEditor(self.board, self.glue_data, self.prevTileList, self.board.Cols, self.board.Rows)
 
     def saveTileConfig(self):
+        """Save the tile config to an XML."""
         filename = tkinter.filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("eXtensible Markup Language", ".xml")])
         if not filename: 
             return
@@ -2025,14 +2028,13 @@ Shift + Right-Click:
         self.newWindow.master.title(f"{filename.split('/')[-1]}")
         self.newWindow.title(f"Editor - {self.parent.title()}")
 
-
-
-
     def closeGUI(self):
+        """Closes the tile editor GUI."""
         self.newWindow.destroy()
         self.newWindow.destroy()
 
     def closeNewTileWindow(self):
+        """Closes the tile type configuration window."""
         self.addTileWindow.destroy()
         self.addTileWindow = None 
 
