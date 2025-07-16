@@ -1745,12 +1745,12 @@ Shift + Right-Click:
 
         for y in range(self.board.Rows): # TODO: Scale dynamically to value of steps parameter  
             for x in range(steps):
-                if self.board.coordToTile[steps][y] is not None: crosses_edge_west = True 
+                if self.board.coordToTile[steps-1][y] is not None: crosses_edge_west = True 
                 if self.board.coordToTile[-1 - steps][y] is not None: crosses_edge_east = True 
 
         for x in range(self.board.Cols): # TODO: Scale dynamically to value of steps parameter 
             for y in range(steps):
-                if self.board.coordToTile[x][steps] is not None: crosses_edge_north = True 
+                if self.board.coordToTile[x][steps-1] is not None: crosses_edge_north = True 
                 if self.board.coordToTile[x][-1 - steps] is not None: crosses_edge_south = True 
 
         if direction == "N":
