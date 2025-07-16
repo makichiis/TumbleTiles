@@ -235,6 +235,10 @@ Left-Click:
 Right-Click:
         - Delete Single Tile
 
+SHIFTING:
+    Arrow Keys - Step entire board in given direction.
+    SHIFT + Arrow Keys - Step entire board 5 steps in given direction.
+
 AREA SELECTION TOOL
 Ctrl + Left-Click:
         - First sqaure clicked will be highlighted green.
@@ -944,19 +948,21 @@ Shift + Right-Click:
             # self.tumbleGUI.setTilesFromEditor(self.board, self.glue_data, self.prevTileList, self.board.Cols, self.board.Rows)
             # self.glue_data = {'N':1, 'E':1, 'S':1, 'W':1,  'A': 1, 'B': 1, 'C': 1, 'D': 1, 'X': 1, 'Y': 1, 'Z': 1}
             
+            shift_held = int(event.state & 0x0001)
+            steps_mult = 1 + 5 * int(shift_held)
 
             if event.keysym == "Up":
                 debug_print("Moving up")
-                self.stepAllTiles("N") # TODO: Replace with enum class arguments
+                self.stepAllTiles("N", steps=steps_mult) # TODO: Replace with enum class arguments
             elif event.keysym == "Right":
                 debug_print("Moving Right")
-                self.stepAllTiles("E")
+                self.stepAllTiles("E", steps=steps_mult)
             elif event.keysym == "Down":
                 debug_print("Moving Down")
-                self.stepAllTiles("S")
+                self.stepAllTiles("S", steps=steps_mult)
             elif event.keysym == "Left":
                 debug_print("Moving Left")
-                self.stepAllTiles("W")
+                self.stepAllTiles("W", steps=steps_mult)
         elif SELECTIONMADE:
             if event.keysym == "Up":
                 debug_print("Moving up")
@@ -1738,12 +1744,14 @@ Shift + Right-Click:
         crosses_edge_east  = False 
 
         for y in range(self.board.Rows): # TODO: Scale dynamically to value of steps parameter  
-            if self.board.coordToTile[0][y] is not None: crosses_edge_west = True 
-            if self.board.coordToTile[-1][y] is not None: crosses_edge_east = True 
+            for x in range(steps):
+                if self.board.coordToTile[steps][y] is not None: crosses_edge_west = True 
+                if self.board.coordToTile[-1 - steps][y] is not None: crosses_edge_east = True 
 
         for x in range(self.board.Cols): # TODO: Scale dynamically to value of steps parameter 
-            if self.board.coordToTile[x][0] is not None: crosses_edge_north = True 
-            if self.board.coordToTile[x][-1] is not None: crosses_edge_south = True 
+            for y in range(steps):
+                if self.board.coordToTile[x][steps] is not None: crosses_edge_north = True 
+                if self.board.coordToTile[x][-1 - steps] is not None: crosses_edge_south = True 
 
         if direction == "N":
             if crosses_edge_north: return 
