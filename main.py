@@ -34,6 +34,7 @@ from PIL import GifImagePlugin
 GifImagePlugin.LOADING_STRATEGY = GifImagePlugin.LoadingStrategy.RGB_AFTER_DIFFERENT_PALETTE_ONLY
 
 # TODO: ULTRA MEGA IMPORTANT TODO: SERIOUSLY TODO: FIX HARDCODED GUI. FOR THE LOVE OF THE FATHER, THE SON, AND THE HOLY SPIRIT, FIX IT.
+# TODO: Video Export scaling (^ or just do this) and also display output resolution and projected time/memusage 
 
 try:
     PYSCREEN = False
@@ -2021,8 +2022,9 @@ class VideoExport:
         
     def openFileWindow(self):
         fileName = getFile(FileType.TXT)
-
         self.fileName.set(fileName)
+
+        self.t.focus_set()
         # self.fileNameField.delete(0,END)
         # self.fileNameField.insert(0, fileName)
         
@@ -2077,6 +2079,7 @@ class VideoExport:
 
         exportFile = tkinter.filedialog.asksaveasfilename(confirmoverwrite=True, defaultextension=".gif", filetypes=[("Graphics Interchange Format", ".gif")])
         self.exportFileNameLabel.config(text=f"Output File Name: {exportFile}")
+        self.t.focus_set()
 
         # if self.exportFileNameText.get() == "": # If no file name was given create one
         
