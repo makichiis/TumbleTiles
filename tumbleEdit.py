@@ -2110,12 +2110,14 @@ Shift + Right-Click:
             self.pressed_apply = False
 
             Label(self.w, text="Width:").pack()
-            self.bw_sbx=Spinbox(self.w, from_=10, to=1000,width=5, increment=5, textvariable = self.bw)
+            # self.bw_sbx=Spinbox(self.w, from_=10, to=1000,width=5, increment=5, textvariable = self.bw)
+            self.bw_sbx = Entry(self.w, textvariable=self.bw, width=5)
             # self.e1.insert(0, str(board_w))
             self.bw_sbx.pack()
 
             Label(self.w, text="Height:").pack()
-            self.bh_sbx = Spinbox(self.w, from_=10, to=1000,width=5, increment=5, textvariable = self.bh)
+            # self.bh_sbx = Spinbox(self.w, from_=10, to=1000,width=5, increment=5, textvariable = self.bh)
+            self.bh_sbx = Entry(self.w, width=5, textvariable=self.bh)
             # self.e2.insert(0, str(board_h))
             self.bh_sbx.pack()
 

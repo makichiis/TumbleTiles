@@ -307,16 +307,21 @@ class Settings:
             padx=5,
             pady=5,
             sticky=W)
-        self.boardwidth_sbx = Spinbox(
+        # self.boardwidth_sbx = Spinbox(
+        #     self.t,
+        #     from_=10,
+        #     to=5000,
+        #     width=5,
+        #     textvariable=self.tkBOARDWIDTH).grid(
+        #     row=1,
+        #     column=1,
+        #     padx=5,
+        #     pady=5)
+        self.boardheight_sbx = Entry(
             self.t,
-            from_=10,
-            to=500,
-            width=5,
-            textvariable=self.tkBOARDWIDTH).grid(
-            row=1,
-            column=1,
-            padx=5,
-            pady=5)
+            textvariable=self.tkBOARDWIDTH,
+            width=5 
+        ).grid(row=1, column=1, padx=5, pady=5)
         # board height
         self.l3 = Label(
             self.t,
@@ -326,16 +331,21 @@ class Settings:
             padx=5,
             pady=5,
             sticky=W)
-        self.boardheight_sbx = Spinbox(
+        # self.boardheight_sbx = Spinbox(
+        #     self.t,
+        #     from_=10,
+        #     to=5000,
+        #     width=5,
+        #     textvariable=self.tkBOARDHEIGHT).grid(
+        #     row=2,
+        #     column=1,
+        #     padx=5,
+        #     pady=5)
+        self.boardheight_sbx = Entry(
             self.t,
-            from_=10,
-            to=500,
-            width=5,
-            textvariable=self.tkBOARDHEIGHT).grid(
-            row=2,
-            column=1,
-            padx=5,
-            pady=5)
+            textvariable=self.tkBOARDHEIGHT,
+            width=5 
+        ).grid(row=2, column=1, padx=5, pady=5)
         # temperature
         self.l4 = Label(
             self.t,
