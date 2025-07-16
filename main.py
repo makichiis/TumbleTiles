@@ -1366,7 +1366,7 @@ class tumblegui:
                     copy.deepcopy(self.board.Polyominoes))
                 self.CurrentState = self.maxStates - 1
             else:
-                print("Removing some states 1")
+                # print("Removing some states 1")
                 self.ApplyUndo()
 
                 self.stateTmpSaves.append(
@@ -1380,7 +1380,7 @@ class tumblegui:
                 self.CurrentState = self.CurrentState + 1
 
             else:
-                print("Removing some states 2")
+                # print("Removing some states 2")
                 self.ApplyUndo()
 
                 self.stateTmpSaves.append(
@@ -1390,7 +1390,7 @@ class tumblegui:
     def ApplyUndo(self):
         global RECORDING
         global SCRIPTSEQUENCE
-        print("Applying Undo")
+        # print("Applying Undo")
         for x in range(0, len(self.stateTmpSaves) - self.CurrentState - 1):
             print("x :", x)
             self.stateTmpSaves.pop()

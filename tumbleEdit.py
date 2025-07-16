@@ -2040,6 +2040,7 @@ Shift + Right-Click:
         """Clamps the board to the bounding box of the simulation."""
 
         min_x, min_y, max_x, max_y = self.getBoundingBox()
+        print(self.getBoundingBox())
 
         self.stepAllTiles("W", False, min_x)
         self.stepAllTiles("N", False, min_y)
@@ -2062,8 +2063,8 @@ Shift + Right-Click:
         min_y = self.board_h
         max_y = 0 
 
-        for x in range(self.board.Rows):
-            for y in range(self.board.Cols):
+        for y in range(self.board.Rows):
+            for x in range(self.board.Cols):
                 if self.board.coordToTile[x][y] is not None:
                     min_x = min(min_x, x) 
                     max_x = max(max_x, x)
