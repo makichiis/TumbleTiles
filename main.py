@@ -844,13 +844,13 @@ class tumblegui:
         global SCRIPTSPEED
 
         for x in range(0, len(sequence)):
-            time.sleep(SCRIPTSPEED / 1000)
+            time.sleep(0.0001)
             
             self.MoveDirection(sequence[x])
             
             # print sequence[x], " - ",
 
-            self.w.update_idletasks()
+        self.w.update_idletasks()
 
     def changetile(self):
         global TILESIZE
@@ -1256,13 +1256,13 @@ class tumblegui:
         ) == False and self.tkGLUESTEP.get() == False:
 
             self.board.Tumble(direction)
-            self.Log("T" + direction + ", ")
+            # self.Log("T" + direction + ", ")
 
         # normal with glues
         elif direction != "" and self.tkSTEPVAR.get() == False and self.tkGLUESTEP.get() == True:
 
             self.board.TumbleGlue(direction)
-            self.Log("TG" + direction + ", ")
+            # self.Log("TG" + direction + ", ")
 
         # single step
         elif direction != "" and self.tkSTEPVAR.get():
@@ -1271,12 +1271,13 @@ class tumblegui:
             s = self.board.Step(direction)
             if self.tkGLUESTEP.get():
                 self.board.ActivateGlues()
-                self.Log("SG" + direction + ", ")
+                # self.Log("SG" + direction + ", ")
             else:
-                self.Log("S" + direction + ", ")
+                ...
+                # self.Log("S" + direction + ", ")
             if s == False and self.tkGLUESTEP.get() == False:
                 self.board.ActivateGlues()
-                self.Log("G, ")
+                # self.Log("G, ")
         self.SaveStates()
         if RECORDING:
             SCRIPTSEQUENCE = SCRIPTSEQUENCE + direction
