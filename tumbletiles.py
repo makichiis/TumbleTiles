@@ -10,6 +10,7 @@ import sys
 import inspect
 import random
 from time import time
+from typing import Generator
 
 
 DEBUGGING = False
@@ -32,6 +33,24 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 #tile class for individual tiles
+
+# A unique identifier counter for all tiles
+TILE_ID_COUNTER = 0
+
+def static_vars(**kwargs):
+    def decorate(func):
+        for k in kwargs:
+            setattr(func, k, kwargs[k])
+        return func
+    return decorate
+
+@static_vars(max_uid=0)
+def get_next_uid() -> int:
+    """Generate a unique identifier. Incremental."""
+    get_next_uid.max_uid += 1
+    return get_next_uid.max_uid
+
+
 class Tile:
     def __init__(self):
         global COLOR
@@ -42,6 +61,7 @@ class Tile:
         self.color = COLOR[0]
         self.glues = ['N','E','S','W']
         self.isConcrete = False
+        self.uid = get_next_uid()
 
     def __init__(self,s,r,c,g):
         self.symbol = s
@@ -51,6 +71,7 @@ class Tile:
         self.y = c
         self.glues = g
         self.isConcrete = False
+        self.uid = get_next_uid()
         
     def __init__(self, parent, s,r,c,g,color, isConcrete):
         self.parent = parent #polyomino that this tile is a part of
@@ -59,6 +80,7 @@ class Tile:
         self.color = color
         self.x = int(r)
         self.y = int(c)
+        self.uid = get_next_uid()
 
 
         # Check for the case that isConcrete might be passed as a String if being read from an xml file
@@ -190,8 +212,8 @@ class Polyomino:
 class Board:
     #constructor for polyomino, assigns the size of Rows and Colums and creates an empty board
     def __init__(self,R,C):
-        self.rectangles = []
-        self.glueText = []
+        self.rectangles = {} # Indexed by tile UID 
+        self.glueText = {}   # Indexed by tile UID
         self.stateTmpSaves = []
         self.polyTmpSaves = []
         

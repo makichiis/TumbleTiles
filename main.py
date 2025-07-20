@@ -64,7 +64,7 @@ NEWTILEWINDOW_H = 180
 LOGFILE = None
 LOGFILENAME = ""
 #TODO: Change back to 25
-TILESIZE = 12
+TILESIZE = 10
 VERSION = "2.0"
 LASTLOADEDFILE = ""
 LASTLOADEDSCRIPT = ""
@@ -87,6 +87,7 @@ MODS = {
     0x0400: 'Mouse button 3'
 }
 
+COUNTER = 0
 
 class ScriptExecutorThread(threading.Thread):
     def __init__(self, threadID, name, counter, tg, onstop=lambda: ...):
