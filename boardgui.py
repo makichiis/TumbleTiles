@@ -83,7 +83,6 @@ def deleteTumbleTiles(board, boardwidth, boardheight, canvas, tilesize, textcolo
                 i=i+1
                 
 def redrawTumbleTiles(board: TT.Board, boardwidth, boardheight, canvas: Canvas, tilesize, textcolor = "#000000", gridcolor = "#000000", b_drawGrid = False, b_drawLoc = False):
-    start = time()
     for p in board.Polyominoes:
         for tile in p.Tiles:
             rect_id = board.rectangles[tile.uid]
@@ -101,8 +100,6 @@ def redrawTumbleTiles(board: TT.Board, boardwidth, boardheight, canvas: Canvas, 
                 if glue_s_id: canvas.coords(glue_s_id, tilesize*tile.x + tilesize//2, tilesize*tile.y+ tilesize - tilesize//5)
                 if glue_w_id: canvas.coords(glue_w_id, tilesize*tile.x + tilesize//5, tilesize*tile.y + tilesize//2)
 
-    print(f"Redraw elapsed: {(time() - start) * 1000}ms")
-            
 
 def drawGrid(board, boardwidth, boardheight, canvas, tilesize, gridcolor = "#000000", b_drawGrid = False, b_drawLoc = False):
     if b_drawGrid == True:

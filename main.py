@@ -1265,7 +1265,6 @@ class tumblegui:
 
     # Tumbles the board in a direction, then redraws the Canvas
     def MoveDirection(self, direction, redraw=True):
-        start = time.time()
         global RECORDING
         global SCRIPTSEQUENCE
 
@@ -1278,7 +1277,6 @@ class tumblegui:
             
 
             self.board.Tumble(direction)
-            print(f"Move elapsed (Tumble()): {(time.time() - start) * 1000}ms")
             # self.Log("T" + direction + ", ")
 
         # normal with glues
@@ -1306,13 +1304,9 @@ class tumblegui:
         if RECORDING:
             SCRIPTSEQUENCE = SCRIPTSEQUENCE + direction
 
-        print(f"Move elapsed (SaveStates()): {(time.time() - start) * 1000}ms")
-
-
         if redraw: # TODO: Redraw is heavily bottlenecked when script executor is active
             self.callCanvasRedrawTumbleTiles()
 
-        print(f"Move elapsed: {(time.time() - start) * 1000}ms")
 
     # except Exception as e:
      #   print e
