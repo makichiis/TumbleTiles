@@ -91,7 +91,7 @@ def parseFile(filename):
             newPrevTile["eastGlue"] = " "
             newPrevTile["label"] = "X"
             newPrevTile["concrete"] = " "
-
+            newPrevTile["name"] = ""
     
 
             if prev.find('Color') != None:
@@ -136,6 +136,7 @@ def parseFile(filename):
             newTile["eastGlue"] = " "
             newTile["label"] = "X"
             newTile["concrete"] = " "
+            newTile["name"] = ""
 
             if tile.find('Location') != None:
                 newTile["location"]["x"] = int(tile.find('Location').attrib['x'])
@@ -184,9 +185,9 @@ def parseFile(filename):
             board.Add(poly)
         else:
             glues = []
-            tile = TT.Tile(None, 0, tile["location"]["x"], tile["location"]["y"], glues, tile["color"], "True")
-            tile.name = tile["name"]
-            board.AddConc(tile)
+            concrete_tile = TT.Tile(None, 0, tile["location"]["x"], tile["location"]["y"], glues, tile["color"], "True")
+            concrete_tile.name = tile["name"]
+            board.AddConc(concrete_tile)
 
     for prevTile in prevTiles:
         prevGlues = [prevTile["northGlue"],prevTile["eastGlue"],prevTile["southGlue"],prevTile["westGlue"]]
