@@ -404,6 +404,7 @@ Shift + Right-Click:
         self.queryTileSetNameWindow.wm_title(f"Set Tile Name of TILE({tile.uid}) at ({tile.x, tile.y})")
         self.queryTileSetNameWindow.geometry("250x50")
         self.queryTileSetNameWindow.wm_resizable(False, False)
+        self.queryTileSetNameWindow.protocol("WM_DELETE_WINDOW", lambda: self.queryTileSetNameDestroy())
 
         self.queryTileSetNameWindowNameVar = StringVar()
 
@@ -417,11 +418,14 @@ Shift + Right-Click:
         self.queryTileSetNameWindowFrame.pack()
         self.queryTileSetNameWindowSubmitButton.pack()
 
+    def queryTileSetNameDestroy(self):
+        self.queryTileSetNameWindow.destroy()
+        self.queryTileSetNameWindow = None 
+
     def queryTileSetNameFulfillAndClose(self, tile: TT.Tile):
         tile.name = self.queryTileSetNameWindowNameVar.get()
 
-        self.queryTileSetNameWindow.destroy()
-        self.queryTileSetNameWindow = None 
+        self.queryTileSetNameDestroy()
 
         self.redrawPrev()
 
