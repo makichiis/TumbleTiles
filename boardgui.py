@@ -15,7 +15,9 @@ def redrawCanvas(board, boardwidth, boardheight, canvas, tilesize, textcolor = "
 
             color = tile.color
             board.rectangles[tile.uid] = canvas.create_rectangle(tilesize*tile.x, tilesize*tile.y, tilesize*tile.x + tilesize, tilesize*tile.y + tilesize, fill = color)
-            # board.rectangles.append(canvas.create_rectangle(tilesize*tile.x, tilesize*tile.y, tilesize*tile.x + tilesize, tilesize*tile.y + tilesize, fill = color))
+
+            if tile.name:
+                board.nameText[tile.uid] = canvas.create_text((tilesize / 2) + tilesize*tile.x, (tilesize / 2) + tilesize*tile.y, text=tile.name, fill=textcolor, font=('', tilesize//2))
 
             if 'N' in tile.glues or 'E' in tile.glues or 'S' in tile.glues or 'W' in tile.glues:
                 board.glueText[tile.uid] = { 'N': 0, 'E': 0, 'S': 0, 'W': 0 }
@@ -88,6 +90,9 @@ def redrawTumbleTiles(board: TT.Board, boardwidth, boardheight, canvas: Canvas, 
             rect_id = board.rectangles[tile.uid]
             canvas.coords(rect_id, tilesize*tile.x, tilesize*tile.y, tilesize*tile.x + tilesize, tilesize*tile.y + tilesize)
             # board.tk_batched_update_buffer.append(canvas.coords, rect_id, tilesize*tile.x, tilesize*tile.y, tilesize*tile.x + tilesize, tilesize*tile.y + tilesize)
+
+            if tile.uid in board.nameText:
+                canvas.coords(board.nameText[tile.uid], (tilesize / 2) + tilesize*tile.x, (tilesize / 2) + tilesize*tile.y)
 
             if board.glueText[tile.uid]:
                 glue_n_id = board.glueText[tile.uid]['N']

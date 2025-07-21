@@ -95,7 +95,7 @@ class TileEditorGUI:
         self.width = self.board_w * self.tile_size
         self.height = self.board_h * self.tile_size
 
-        self.prevTileList = previewTileList
+        self.prevTileList: list[TT.Tile] = previewTileList
 
         self.selectedTileIndex = -1
 
@@ -320,6 +320,8 @@ Shift + Right-Click:
      lambda event: self.onBoardClick(event))  # -- RIGHT CLICK
         self.BoardCanvas.bind("<Button-2>", lambda event: self.onBoardClick(event))
 
+        self.BoardCanvas.bind("<Double-Button-1>", self.setTileName)
+
         # Location of last square clicked
         self.CURRENTCLICKX = 0
         self.CURRENTCLICKY = 0
@@ -385,8 +387,49 @@ Shift + Right-Click:
         self.redrawPrev()
 
         self.highlighted_cross = (None, None)
+        self.queryTileSetNameWindow = None 
 
     # populates the array of tiles
+
+    def canvasCoordsToTileCoords(self, x: int, y: int) -> tuple[int, int]:
+        return (x // self.tile_size, y // self.tile_size)
+
+    def queryTileSetName(self, tile: TT.Tile):
+        if self.queryTileSetNameWindow: return 
+
+        self.queryTileSetNameWindow = Toplevel(self.newWindow)
+        self.queryTileSetNameWindow.wm_title(f"Set Tile Name of TILE({tile.uid}) at ({tile.x, tile.y})")
+        self.queryTileSetNameWindow.geometry("250x50")
+        self.queryTileSetNameWindow.wm_resizable(False, False)
+
+        self.queryTileSetNameWindowNameVar = StringVar()
+
+        self.queryTileSetNameWindowFrame = Frame(self.queryTileSetNameWindow, width=250, height=25)
+        self.queryTileSetNameWindowLabel = Label(self.queryTileSetNameWindowFrame, text="Set tile name:")
+        self.queryTileSetNameWindowEntry = Entry(self.queryTileSetNameWindowFrame, textvariable=self.queryTileSetNameWindowNameVar, width=10)
+        self.queryTileSetNameWindowSubmitButton = Button(self.queryTileSetNameWindow, text="Apply", command=lambda: self.queryTileSetNameFulfillAndClose(tile))
+
+        self.queryTileSetNameWindowLabel.pack(side=LEFT)
+        self.queryTileSetNameWindowEntry.pack(side=LEFT)
+        self.queryTileSetNameWindowFrame.pack()
+        self.queryTileSetNameWindowSubmitButton.pack()
+
+        tile.name = "a"
+
+    def queryTileSetNameFulfillAndClose(self, tile: TT.Tile):
+        tile.name = self.queryTileSetNameWindowNameVar.get()
+
+        self.queryTileSetNameWindow.destroy()
+        self.queryTileSetNameWindow = None 
+        ...
+
+    def setTileName(self, event: Event):
+        tx, ty = self.canvasCoordsToTileCoords(event.x, event.y)
+
+        for p in self.board.Polyominoes:
+            for tile in p.Tiles:
+                if tile.x == tx and tile.y == ty:
+                    self.queryTileSetName(tile) # TODO: Replace with name query 
 
     def populateArray(self):
         self.coord2tile = [[None for x in range(
@@ -1921,7 +1964,7 @@ Shift + Right-Click:
                 
 
                 wg = ET.SubElement(prevTile, "WestGlue")
-                
+
 
                 if len(td.glues) > 0:
                     ng.text = str(td.glues[0])
@@ -1969,7 +2012,12 @@ Shift + Right-Click:
                 co = ET.SubElement(t, "Concrete")
                 co.text = str(tile.isConcrete)
 
+                uid = ET.SubElement(t, "uid")
+                uid.text = str(tile.uid)
 
+                name = ET.SubElement(t, "name")
+                name.text = tile.name 
+                print(name.text)
 
                 la = ET.SubElement(t, "Label")
                 la.text = str(tile.id)

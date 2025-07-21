@@ -93,6 +93,8 @@ COUNTER = 0
 simulation_batch_MoveDirection: Queue[tuple] = Queue()
 
 def OnScriptStepInvocation(e: Event):
+    global simulation_batch_MoveDirection
+
     if simulation_batch_MoveDirection.empty(): return
 
     item = simulation_batch_MoveDirection.get()
@@ -1466,7 +1468,7 @@ class tumblegui:
             self.prevTileList)
 
     # Turns the list of polyominoes and concrete tiles into a list of tiles including their position
-    # this is used to get the tile list that will be paseed to the editor
+    # this is used to get the tile list that will be passed to the editor
     def getTileDataFromBoard(self):
         new_tile_data = []
 
@@ -1484,6 +1486,7 @@ class tumblegui:
                 ntile["westGlue"] = t.glues[3]
                 ntile["color"] = t.color
                 ntile["concrete"] = "False"
+                ntile["name"] = t.name
 
                 new_tile_data.append(ntile)
 
@@ -1507,7 +1510,7 @@ class tumblegui:
 
     # This method will be called wben you want to export the tiles from the
     # editor back to the simulation
-    def setTilesFromEditor(self, board, glueFunc, prev_tiles, width, height):
+    def setTilesFromEditor(self, board: TT.Board, glueFunc, prev_tiles, width, height):
         TT.BOARDHEIGHT = board.Rows
         TT.BOARDWIDTH = board.Cols
         self.board = board
@@ -1521,6 +1524,7 @@ class tumblegui:
         self.SaveStates()
         self.callCanvasRedraw()
 
+        
     def parseFile2(self, filename):
         tree = ET.parse(filename)
         treeroot = tree.getroot()

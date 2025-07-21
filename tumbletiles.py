@@ -62,6 +62,7 @@ class Tile:
         self.glues = ['N','E','S','W']
         self.isConcrete = False
         self.uid = get_next_uid()
+        self.name = ""
 
     def __init__(self,s,r,c,g):
         self.symbol = s
@@ -72,6 +73,7 @@ class Tile:
         self.glues = g
         self.isConcrete = False
         self.uid = get_next_uid()
+        self.name = ""
         
     def __init__(self, parent, s,r,c,g,color, isConcrete):
         self.parent = parent #polyomino that this tile is a part of
@@ -81,6 +83,7 @@ class Tile:
         self.x = int(r)
         self.y = int(c)
         self.uid = get_next_uid()
+        self.name = ""
 
 
         # Check for the case that isConcrete might be passed as a String if being read from an xml file
@@ -222,6 +225,7 @@ class Board:
     def __init__(self,R,C):
         self.rectangles = {} # Indexed by tile UID 
         self.glueText = {}   # Indexed by tile UID
+        self.nameText = {}   # Indexed by tile UID 
         self.stateTmpSaves = []
         self.polyTmpSaves = []
         
@@ -245,9 +249,6 @@ class Board:
         # and can also speed up ActivateGlues, since right now it runs in O(P * P * N) time since it compares every tile of every polyominoe
         # to every tile of every other polyomino
         self.coordToTile = [[None for x in range(self.Rows)] for y in range(self.Cols)]
-
-        # TODO: Temporary. Will think of moving this later.
-        tk_batched_update_buffer: list[TkUpdateQuery] = []
 
 
     def SaveStates(self):
@@ -570,6 +571,7 @@ class Board:
            # color = ('#%02X%02X%02X' % (r(),r(),r()))
             color = tile.color
             poly = Polyomino(0, tile.x, tile.y, tile.glues, color)
+            poly.Tiles[0].name = tile.name # what an utterly awful fix.
             self.Polyominoes.append(poly)
         self.remapArray()
         self.ActivateGlues()
