@@ -417,8 +417,6 @@ Shift + Right-Click:
         self.queryTileSetNameWindowFrame.pack()
         self.queryTileSetNameWindowSubmitButton.pack()
 
-        tile.name = "a"
-
     def queryTileSetNameFulfillAndClose(self, tile: TT.Tile):
         tile.name = self.queryTileSetNameWindowNameVar.get()
 
