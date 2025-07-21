@@ -239,6 +239,9 @@ SHIFTING:
     Arrow Keys - Step entire board in given direction.
     SHIFT + Arrow Keys - Step entire board 5 steps in given direction.
 
+TILE NAMING:
+    Double-click on an existing tile to give it a custom label.
+
 AREA SELECTION TOOL
 Ctrl + Left-Click:
         - First sqaure clicked will be highlighted green.
