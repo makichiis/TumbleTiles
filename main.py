@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 import copy
 import threading
+from queue import Queue
 
 from tkinter import *
 from tkinter import messagebox
@@ -89,6 +90,15 @@ MODS = {
 
 COUNTER = 0
 
+simulation_batch_MoveDirection: Queue[tuple] = Queue()
+
+def OnScriptStepInvocation(e: Event):
+    if simulation_batch_MoveDirection.empty(): return
+
+    item = simulation_batch_MoveDirection.get()
+    item[0].MoveDirection(item[1]) # lmao
+    simulation_batch_MoveDirection.task_done()
+
 class ScriptExecutorThread(threading.Thread):
     def __init__(self, threadID, name, counter, tg, onstop=lambda: ...):
         threading.Thread.__init__(self)
@@ -103,19 +113,26 @@ class ScriptExecutorThread(threading.Thread):
         self.f = f
 
     def run_once_(self):
+        global simulation_batch_MoveDirection
+
         for c in self.f:
             if self.counter == 0:
                 break
 
             time.sleep(self.counter / 1000)
             
-            self.tg.MoveDirection(c)
+            simulation_batch_MoveDirection.put((self.tg, c))
+            self.tg.root.event_generate("<<OnScriptStepInvocation>>")
+
             
 
     def run(self):
+
         if self.tg.tkLoopScript.get():
-            while self.tg.tkLoopScript.get() and self.counter != 0:
+            # still have no idea what the point of the counter check is 
+            while self.tg.tkLoopScript.get() and self.counter != 0: 
                 self.run_once_()
+                
         else:
             self.run_once_()
 
@@ -446,7 +463,7 @@ class tumblegui:
         self.prevTileList = []
 
         self.board = TT.Board(TT.BOARDHEIGHT, TT.BOARDWIDTH)
-        self.root = root
+        self.root: Tk = root
         self.root.resizable(True, True)
         self.mainframe = Frame(self.root, bd=0, relief=FLAT)
 
@@ -836,6 +853,8 @@ class tumblegui:
         self.thread1.counter = SCRIPTSPEED
         self.thread1.setScript(script)
         self.thread1.start()
+        self.root.bind("<<OnScriptStepInvocation>>", OnScriptStepInvocation)
+
         # self.runSequence(script)
 
     # Steps through string in script and tumbles in that direction
@@ -845,7 +864,7 @@ class tumblegui:
         global SCRIPTSPEED
 
         for x in range(0, len(sequence)):
-            time.sleep(0.0001)
+            # time.sleep(0.0001) TODO uncomment
             
             self.MoveDirection(sequence[x])
             
@@ -1246,6 +1265,7 @@ class tumblegui:
 
     # Tumbles the board in a direction, then redraws the Canvas
     def MoveDirection(self, direction, redraw=True):
+        start = time.time()
         global RECORDING
         global SCRIPTSEQUENCE
 
@@ -1255,13 +1275,14 @@ class tumblegui:
         # normal
         if direction != "" and self.tkSTEPVAR.get(
         ) == False and self.tkGLUESTEP.get() == False:
+            
 
             self.board.Tumble(direction)
+            print(f"Move elapsed (Tumble()): {(time.time() - start) * 1000}ms")
             # self.Log("T" + direction + ", ")
 
         # normal with glues
         elif direction != "" and self.tkSTEPVAR.get() == False and self.tkGLUESTEP.get() == True:
-
             self.board.TumbleGlue(direction)
             # self.Log("TG" + direction + ", ")
 
@@ -1279,12 +1300,19 @@ class tumblegui:
             if s == False and self.tkGLUESTEP.get() == False:
                 self.board.ActivateGlues()
                 # self.Log("G, ")
+        
+        
         self.SaveStates()
         if RECORDING:
             SCRIPTSEQUENCE = SCRIPTSEQUENCE + direction
 
-        if redraw:    
+        print(f"Move elapsed (SaveStates()): {(time.time() - start) * 1000}ms")
+
+
+        if redraw: # TODO: Redraw is heavily bottlenecked when script executor is active
             self.callCanvasRedrawTumbleTiles()
+
+        print(f"Move elapsed: {(time.time() - start) * 1000}ms")
 
     # except Exception as e:
      #   print e

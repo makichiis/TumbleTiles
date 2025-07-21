@@ -97,6 +97,7 @@ class Tile:
 
         
 
+
         
 #tiles must be part of a polyomino
 class Polyomino:
@@ -208,7 +209,14 @@ class Polyomino:
                 closest = False
 
         return closest
-        
+
+
+# TODO: Move this to main (?)
+class TkUpdateQuery:
+    def __init__(self, method, *args):
+        self.method = method 
+        self.args = args 
+
 class Board:
     #constructor for polyomino, assigns the size of Rows and Colums and creates an empty board
     def __init__(self,R,C):
@@ -237,6 +245,9 @@ class Board:
         # and can also speed up ActivateGlues, since right now it runs in O(P * P * N) time since it compares every tile of every polyominoe
         # to every tile of every other polyomino
         self.coordToTile = [[None for x in range(self.Rows)] for y in range(self.Cols)]
+
+        # TODO: Temporary. Will think of moving this later.
+        tk_batched_update_buffer: list[TkUpdateQuery] = []
 
 
     def SaveStates(self):

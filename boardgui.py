@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from tkinter import *
 from PIL import Image, ImageDraw
 import tumbletiles as TT
+from time import time
 
 def redrawCanvas(board, boardwidth, boardheight, canvas, tilesize, textcolor = "#000000", gridcolor = "#000000", b_drawGrid = False, b_drawLoc = False):
     canvas.delete(ALL)
@@ -82,12 +83,12 @@ def deleteTumbleTiles(board, boardwidth, boardheight, canvas, tilesize, textcolo
                 i=i+1
                 
 def redrawTumbleTiles(board: TT.Board, boardwidth, boardheight, canvas: Canvas, tilesize, textcolor = "#000000", gridcolor = "#000000", b_drawGrid = False, b_drawLoc = False):
+    start = time()
     for p in board.Polyominoes:
         for tile in p.Tiles:
-            assert(tile.uid and tile.uid != 0)
-
             rect_id = board.rectangles[tile.uid]
             canvas.coords(rect_id, tilesize*tile.x, tilesize*tile.y, tilesize*tile.x + tilesize, tilesize*tile.y + tilesize)
+            # board.tk_batched_update_buffer.append(canvas.coords, rect_id, tilesize*tile.x, tilesize*tile.y, tilesize*tile.x + tilesize, tilesize*tile.y + tilesize)
 
             if board.glueText[tile.uid]:
                 glue_n_id = board.glueText[tile.uid]['N']
@@ -99,6 +100,8 @@ def redrawTumbleTiles(board: TT.Board, boardwidth, boardheight, canvas: Canvas, 
                 if glue_e_id: canvas.coords(glue_e_id, tilesize*tile.x + tilesize - tilesize//5, tilesize*tile.y + tilesize//2)
                 if glue_s_id: canvas.coords(glue_s_id, tilesize*tile.x + tilesize//2, tilesize*tile.y+ tilesize - tilesize//5)
                 if glue_w_id: canvas.coords(glue_w_id, tilesize*tile.x + tilesize//5, tilesize*tile.y + tilesize//2)
+
+    print(f"Redraw elapsed: {(time() - start) * 1000}ms")
             
 
 def drawGrid(board, boardwidth, boardheight, canvas, tilesize, gridcolor = "#000000", b_drawGrid = False, b_drawLoc = False):
