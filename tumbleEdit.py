@@ -424,7 +424,8 @@ Shift + Right-Click:
 
         self.queryTileSetNameWindow.destroy()
         self.queryTileSetNameWindow = None 
-        ...
+
+        self.redrawPrev()
 
     def setTileName(self, event: Event):
         tx, ty = self.canvasCoordsToTileCoords(event.x, event.y)
