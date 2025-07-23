@@ -1633,7 +1633,7 @@ Shift + Right-Click:
                     newY = self.CURRENTSELECTIONY + y
                     # print "NEWY: ", newY
 
-                    if newX > self.board.Rows or newY > self.board.Cols:
+                    if newX > self.board.Cols or newY > self.board.Rows:
                         continue
 
                     p = TT.Polyomino(0, newX, newY, tile.glues, tile.color)
@@ -1641,7 +1641,8 @@ Shift + Right-Click:
                     eastGlue = self.newTileE.get()
                     southGlue = self.newTileS.get()
                     westGlue = self.newTileW.get()
-                    
+                    p.Tiles[0].name = tile.name
+
 
                     glues = [northGlue, eastGlue, southGlue, westGlue]
                     color = "#686868"
