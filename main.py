@@ -21,6 +21,9 @@ import tumbletiles as TT
 import tumbleEdit as TE
 
 import tt2svg as TT2SVG
+import sv_ttk
+import pywinstyles
+import argparse
 
 from getFile import getFile, parseFile, FileType
 from boardgui import redrawCanvas, drawGrid, redrawTumbleTiles, deleteTumbleTiles, drawPILImage
@@ -2171,8 +2174,38 @@ class VideoExport:
         self.t.update()
 
 
+sysargs_parser = argparse.ArgumentParser(
+    prog='TumbleTiles',
+    description='A full tilt simulator',
+    epilog='This codebase is not to be built with AI at any point.'
+)
+
+sysargs_parser.add_argument('-d', '--dark', action='store_true', help="Enable dark mode. Experimental.")  # Experimental 
+sysargs_parser.add_argument('-D', '--debug', action='store_true', help="Debug mode. Experimental.") # WIP
+
+
+def set_darkmode(root):
+    sv_ttk.set_theme("dark")
+
+    if os.name != 'nt': return 
+
+    version = sys.getwindowsversion()
+
+    if version.major != 10: return 
+
+    if version.build >= 22000:
+        # Set the title bar color to the background color on Windows 11 for better appearance
+        pywinstyles.change_header_color(root, "#1c1c1c" if sv_ttk.get_theme() == "dark" else "#fafafa")
+    else:
+        pywinstyles.apply_style(root, "dark" if sv_ttk.get_theme() == "dark" else "normal")
+
+        # A hacky way to update the title bar's color on Windows 10 (it doesn't update instantly like on Windows 11)
+        root.wm_attributes("-alpha", 0.99)
+        root.wm_attributes("-alpha", 1)
+
 
 if __name__ == "__main__":
+    args = sysargs_parser.parse_args()
 
     random.seed()
     root = Tk()
@@ -2186,5 +2219,7 @@ if __name__ == "__main__":
     # root.geometry('300x300')
     mainwin = tumblegui(root)
 
-    # TODO: For threading and mutexes: https://stackoverflow.com/a/54374873
+    if args.dark:
+        set_darkmode(root)
+
     mainloop()
