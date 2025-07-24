@@ -21,14 +21,17 @@ import tumbletiles as TT
 import tumbleEdit as TE
 
 import tt2svg as TT2SVG
-import sv_ttk
-import pywinstyles
+
 import argparse
 
 from getFile import getFile, parseFile, FileType
 from boardgui import redrawCanvas, drawGrid, redrawTumbleTiles, deleteTumbleTiles, drawPILImage
 import os
 import sys
+
+import sv_ttk
+if os.name == 'nt':
+    import pywinstyles
 
 
 from PIL import Image, ImageDraw

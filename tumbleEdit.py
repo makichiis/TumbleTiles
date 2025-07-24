@@ -1542,33 +1542,42 @@ Shift + Right-Click:
         # print("SELECTION Y1 : ", self.SELECTIONY1)
         # print("SELECTION Y2 : ", self.SELECTIONY2)
 
+        self.deleteSelection()
+
         selectionWidth = self.SELECTIONX2 - self.SELECTIONX1 + 1
         selectionHeight = self.SELECTIONY2 - self.SELECTIONY1  + 1
         for x in range(0, selectionWidth):
+            newX = self.CURRENTSELECTIONX + (selectionWidth - x) - 1
+            if newX > self.board.Rows: break  
+
             for y in range(0, selectionHeight):
+                newY = self.CURRENTSELECTIONY + y
+                if newY > self.board.Cols: break 
+
                 # print "Removing tile at ", x + self.CURRENTSELECTIONX, ", ", y + self.CURRENTSELECTIONY
-                self.removeTileAtPos(self.CURRENTSELECTIONX + x,self.CURRENTSELECTIONY + y, False)
+                # self.removeTileAtPos(self.CURRENTSELECTIONX + x,self.CURRENTSELECTIONY + y, False)
+                self.addTileAtPos(newX, newY)
                         
 
         # print("fill in")
 
-        selectionWidth = self.SELECTIONX2 - self.SELECTIONX1 + 1
-        selectionHeight = self.SELECTIONY2 - self.SELECTIONY1  + 1
+        # selectionWidth = self.SELECTIONX2 - self.SELECTIONX1 + 1
+        # selectionHeight = self.SELECTIONY2 - self.SELECTIONY1  + 1
 
         # print "Width: ", selectionWidth
         # print "Height: ", selectionHeight
 
-        for x in range(0, selectionWidth):
-            for y in range(0, selectionHeight):
-                newX = self.CURRENTSELECTIONX + (selectionWidth - x) - 1
-                # print "NEWX: ", newX
-                newY = self.CURRENTSELECTIONY + y
-                # print "NEWY: ", newY
+        # for x in range(0, selectionWidth):
+        #     for y in range(0, selectionHeight):
+        #         newX = self.CURRENTSELECTIONX + (selectionWidth - x) - 1
+        #         # print "NEWX: ", newX
+        #         newY = self.CURRENTSELECTIONY + y
+        #         # print "NEWY: ", newY
 
-                if newX > self.board.Rows or newY > self.board.Cols:
-                        continue
+        #         if newX > self.board.Rows or newY > self.board.Cols:
+        #                 continue
                 
-                self.addTileAtPos(newX, newY)
+        #         self.addTileAtPos(newX, newY)
                         
 
         self.redrawPrev()
@@ -1738,8 +1747,8 @@ Shift + Right-Click:
 
 
         # random color function: https://stackoverflow.com/questions/13998901/generating-a-random-hex-color-in-python
-        r = lambda: random.randint(100,255)
         if self.randomizeColor:
+            r = lambda: random.randint(100,255)
             color = ('#%02X%02X%02X' % (r(),r(),r()))
         else:
             color = self.prevTileList[i].color
